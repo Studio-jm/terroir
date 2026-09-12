@@ -1,1 +1,15 @@
 @import "tailwindcss";
+
+body {
+  margin: 1.5rem;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+main {
+  max-width: 40rem;
+}
+
+section {
+  margin-top: 1.75rem;
+}
