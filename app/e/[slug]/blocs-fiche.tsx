@@ -4,7 +4,6 @@ import {
   LIENS,
   MODES,
   PAIEMENTS,
-  htmlObfusque,
   libelleDe,
   libelleMiseAJour,
   libelleMois,
@@ -12,17 +11,6 @@ import {
 } from "@/lib/fiche-lot1";
 import type { Exploitation, LiensSoutien } from "@/lib/exploitation";
 import { LIEN_SOUTIEN_LABELS } from "@/lib/exploitation";
-
-function LienObfusque({ href, texte }: { href: string; texte: string }) {
-  const ancre = `<a href="${htmlObfusque(href)}">${htmlObfusque(texte)}</a>`;
-  return <span dangerouslySetInnerHTML={{ __html: ancre }} />;
-}
-
-function telephoneHref(valeur: string): string {
-  const compact = valeur.replace(/[^\d+]/g, "");
-  const international = compact.startsWith("00") ? `+${compact.slice(2)}` : compact;
-  return `tel:${international}`;
-}
 
 export function BlocsFiche({ exploitation }: { exploitation: Exploitation }) {
   const detail = exploitation.detail;
@@ -108,21 +96,6 @@ export function BlocsFiche({ exploitation }: { exploitation: Exploitation }) {
               <li key={label}>{label}</li>
             ))}
           </ul>
-        </section>
-      ) : null}
-      {detail && (detail.telephone || detail.email) ? (
-        <section className="panneau">
-          <h2 className="text-2xl">Téléphone et e-mail</h2>
-          {detail.telephone ? (
-            <p>
-              <LienObfusque href={telephoneHref(detail.telephone)} texte={detail.telephone} />
-            </p>
-          ) : null}
-          {detail.email ? (
-            <p>
-              <LienObfusque href={`mailto:${detail.email}`} texte={detail.email} />
-            </p>
-          ) : null}
         </section>
       ) : null}
       <LiensPublics detail={detail} soutien={exploitation.liensSoutien} />

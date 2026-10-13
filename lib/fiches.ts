@@ -10,6 +10,7 @@ import {
 import { creerClientServeur } from "@/lib/supabase/server";
 
 export type Fiche = {
+  id: string;
   ownerId: string;
   slug: string;
   nom: string;
@@ -23,6 +24,7 @@ export type Fiche = {
 };
 
 type Ligne = {
+  id: string;
   owner_id: string;
   slug: string;
   nom: string;
@@ -40,11 +42,10 @@ type Ligne = {
   paiements: string[] | null;
   labels: string[] | null;
   liens: unknown;
-  telephone_public: string | null;
-  email_public: string | null;
 };
 
 const COLONNES = [
+  "id",
   "owner_id",
   "slug",
   "nom",
@@ -62,8 +63,6 @@ const COLONNES = [
   "paiements",
   "labels",
   "liens",
-  "telephone_public",
-  "email_public",
 ].join(", ");
 
 export async function clientFiches(): Promise<SupabaseClient | null> {
@@ -72,6 +71,7 @@ export async function clientFiches(): Promise<SupabaseClient | null> {
 
 export function ligneVersFiche(ligne: Ligne): Fiche {
   return {
+    id: ligne.id,
     ownerId: ligne.owner_id,
     slug: ligne.slug,
     nom: ligne.nom,

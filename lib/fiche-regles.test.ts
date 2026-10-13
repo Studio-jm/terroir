@@ -62,12 +62,16 @@ test("normalise une adresse web sans schéma", () => {
   }
 });
 
-test("accepte un e-mail, un téléphone ou une adresse web", () => {
-  for (const valeur of [
-    "ferme@example.com",
-    "06 12 34 56 78",
-    "https://ferme.example",
-  ]) {
+test("le contact public est une adresse web", () => {
+  const web = validerFiche({
+    nom: "Ferme du Test",
+    commune: "Nyons",
+    produits: "miel, pain",
+    contact: "https://ferme.example",
+    description,
+  });
+  assert.equal(web.ok, true);
+  for (const valeur of ["ferme@example.com", "06 00 00 00 00"]) {
     const resultat = validerFiche({
       nom: "Ferme du Test",
       commune: "Nyons",
@@ -75,10 +79,7 @@ test("accepte un e-mail, un téléphone ou une adresse web", () => {
       contact: valeur,
       description,
     });
-    assert.equal(resultat.ok, true, valeur);
-    if (resultat.ok && valeur.includes("@")) {
-      assert.equal(resultat.valeur.contact, valeur);
-    }
+    assert.equal(resultat.ok, false, valeur);
   }
 
   const script = validerFiche({

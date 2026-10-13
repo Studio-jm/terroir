@@ -73,11 +73,7 @@ export function normaliserContact(valeur: string): string {
 }
 
 export function contactValide(valeur: string): boolean {
-  return (
-    emailContactValide(valeur) ||
-    telephoneContactValide(valeur) ||
-    urlContactValide(valeur)
-  );
+  return urlContactValide(valeur);
 }
 
 /** Lien sûr à afficher, ou null si le texte doit rester du texte brut. */
@@ -151,7 +147,7 @@ export function validerFiche(
     erreurs.contact = "Contact : 200 caractères maximum.";
   else if (!contactValide(contact)) {
     erreurs.contact =
-      "Contact : indiquez un e-mail, un téléphone français ou une adresse web (https://exemple.org, www.exemple.org ou exemple.org).";
+      "Contact : indiquez une adresse web (https://exemple.org, www.exemple.org ou exemple.org). Le téléphone et l'e-mail se renseignent plus bas.";
   }
 
   if (!description) erreurs.description = "Description : décrivez l'exploitation.";
@@ -195,6 +191,13 @@ function lireProduits(brut: string, erreurs: ErreursFiche): string[] {
   return produits;
 }
 
+function contactAffiche(contact: string): string | undefined {
+  if (!contact) return undefined;
+  if (emailContactValide(contact) || telephoneContactValide(contact)) return undefined;
+  if (urlContactValide(contact)) return contact;
+  return undefined;
+}
+
 export function ficheVersExploitation(fiche: {
   nom: string;
   slug: string;
@@ -217,8 +220,10 @@ export function ficheVersExploitation(fiche: {
     region: "",
     liensSoutien,
     commune: fiche.commune,
-    contact: fiche.contact,
-    detail: fiche.detail,
+    contact: contactAffiche(fiche.contact),
+    detail: fiche.detail
+      ? { ...fiche.detail, telephone: null, email: null, afficher: false }
+      : undefined,
     updatedAt: fiche.updatedAt,
   };
 }

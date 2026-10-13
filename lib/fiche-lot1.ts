@@ -623,8 +623,6 @@ export function detailDepuisStockPublic(entree: {
   paiements: string[] | null;
   labels: string[] | null;
   liens: unknown;
-  telephone_public: string | null;
-  email_public: string | null;
 }): Lot1Valeur {
   const champs = champsLot1DepuisStock({
     presentation: entree.presentation,
@@ -635,9 +633,9 @@ export function detailDepuisStockPublic(entree: {
     paiements: entree.paiements,
     labels: entree.labels,
     liens: entree.liens,
-    telephone: entree.telephone_public,
-    email: entree.email_public,
-    afficher: Boolean(entree.telephone_public || entree.email_public),
+    telephone: null,
+    email: null,
+    afficher: false,
   });
   const resultat = validerLot1(champs);
   return resultat.ok ? resultat.valeur : detailVide();
