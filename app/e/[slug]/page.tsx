@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { AfficheLot2 } from "@/app/e/[slug]/affiche-lot2";
 import { BlocsFiche } from "@/app/e/[slug]/blocs-fiche";
 import { lienContact } from "@/lib/fiche-regles";
 import type { Exploitation } from "@/lib/exploitation";
@@ -44,14 +45,7 @@ function ContactTexte({ contact }: { contact: string }) {
 }
 
 function ExploitationView({ exploitation }: { exploitation: Exploitation }) {
-  const { nom, histoire, produits, lieux, geo } = exploitation;
-  const osmHref =
-    geo.lat != null && geo.lng != null
-      ? `https://www.openstreetmap.org/?mlat=${geo.lat}&mlon=${geo.lng}#map=13/${geo.lat}/${geo.lng}`
-      : geo.address
-        ? `https://www.openstreetmap.org/search?query=${encodeURIComponent(geo.address)}`
-        : null;
-
+  const { nom, histoire, produits, lieux } = exploitation;
   const photo = photoPour(exploitation.slug);
 
   return (
@@ -78,6 +72,7 @@ function ExploitationView({ exploitation }: { exploitation: Exploitation }) {
       </section>
 
       <div className="mx-auto grid w-full min-w-0 max-w-6xl gap-4 px-4 py-8 md:grid-cols-2">
+        <AfficheLot2 slug={exploitation.slug} complement={exploitation.complement} />
         <section className="panneau md:col-span-2">
           <h2 className="text-2xl">Histoire</h2>
           {histoire.split("\n\n").map((p) => (
@@ -117,23 +112,6 @@ function ExploitationView({ exploitation }: { exploitation: Exploitation }) {
           </ul>
         </section>
 
-        <section className="panneau">
-          <h2 className="text-2xl">Carte</h2>
-          <p>
-            <span aria-hidden="true">📍 </span>
-            {geo.address ?? nom}
-            {geo.lat != null && geo.lng != null
-              ? ` (${geo.lat}, ${geo.lng})`
-              : null}
-          </p>
-          {osmHref ? (
-            <p>
-              <a href={osmHref} rel="nofollow noopener">
-                Voir le pin sur OpenStreetMap
-              </a>
-            </p>
-          ) : null}
-        </section>
       </div>
       <Pied photo={photo} />
     </main>

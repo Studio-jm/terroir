@@ -62,7 +62,7 @@ export function FormulaireFiche({ valeurs }: { valeurs: ValeursFiche }) {
       <Champ
         id="contact"
         label="Contact"
-        aide="Visible sur la fiche publique. E-mail, téléphone français, ou adresse web (exemple.org, www.exemple.org, https://exemple.org)."
+        aide="Adresse web publique (exemple.org, www.exemple.org, https://exemple.org). Le téléphone et l'e-mail se renseignent plus bas et restent masqués jusqu'au clic."
         erreur={erreurs.contact}
         defaultValue={state.valeurs.contact}
         maxLength={200}

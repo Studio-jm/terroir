@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { listExploitations } from "./exploitation";
-import { htmlObfusque } from "./fiche-lot1";
+import { ficheSansCoordonnees } from "./fiche-lot2";
 import { filtrerExploitations } from "./recherche";
 
 test("le filtre catégorie garde le miel et écarte la ferme sans miel", () => {
@@ -26,9 +26,15 @@ test("une fiche sans téléphone n'expose pas de numéro", () => {
   assert.equal(nuages?.detail?.email, null);
 });
 
-test("l'e-mail public n'apparaît pas en clair dans le HTML obfusqué", () => {
-  const html = htmlObfusque("serre@example.com");
-  assert.equal(html.includes("serre@example.com"), false);
-  assert.equal(html.includes("@"), false);
-  assert.match(html, /&#64;/);
+test("la fiche publique ne contient ni e-mail ni téléphone", () => {
+  const serre = listExploitations().find((fiche) => fiche.slug === "ferme-du-serre");
+  assert.ok(serre);
+  const publique = ficheSansCoordonnees(serre);
+  const json = JSON.stringify(publique);
+  assert.equal(json.includes("serre@example.com"), false);
+  assert.equal(json.includes("06 00 00 00 00"), false);
+  assert.equal(json.includes("0600000000"), false);
+  assert.equal(publique.complement?.contactAffichable, true);
+  assert.equal(publique.complement?.carte?.precis, false);
+  assert.equal(publique.complement?.actualites.length, 3);
 });

@@ -1,0 +1,22 @@
+GET /e/ferme-du-serre
+serre@example.com clair False entites False base64 False
+rucher@example.com clair False entites False base64 False
+06 00 00 00 00 clair False entites False base64 False
+0600000000 clair False entites False base64 False
+bandeau Fermé jusqu'au 20 octobre 2026 : True
+bouton Afficher le téléphone : True
+actualite ancienne absente : True
+visite : True
+position commune : True
+adresse exacte autorisée : False
+
+POST /e/ferme-du-serre/contact
+HTTP 200
+{"telephone": "06 00 00 00 00", "email": "serre@example.com"}
+
+GET /e/ferme-du-serre/contact
+HTTP 405
+
+Accueil et /e/rucher-de-nulle-part : aucun de ces secrets.
+
+Lighthouse mobile, un passage, accessibilité 1 sur /e/ferme-du-serre.

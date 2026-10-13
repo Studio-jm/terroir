@@ -1,6 +1,7 @@
 import "server-only";
 
 import { listExploitations } from "@/lib/exploitation";
+import { geocoder } from "@/lib/geocode";
 import {
   colonnesLot1,
   ligneContact,
@@ -84,6 +85,20 @@ async function ecrireContact(
   if (ecriture) throw ecriture;
 }
 
+async function memoriserCommune(
+  supabase: NonNullable<Awaited<ReturnType<typeof clientFiches>>>,
+  userId: string,
+  commune: string,
+) {
+  const point = await geocoder(commune);
+  if (!point) return;
+  const { error } = await supabase
+    .from("exploitations")
+    .update({ lat_commune: point.lat, lng_commune: point.lng })
+    .eq("owner_id", userId);
+  if (error) console.error("[terroir] géocodage de la commune", error);
+}
+
 async function terminer(
   supabase: NonNullable<Awaited<ReturnType<typeof clientFiches>>>,
   userId: string,
@@ -156,6 +171,7 @@ export async function enregistrerFichePour(input: {
       throw error;
     }
     if (!data) return refus();
+    await memoriserCommune(supabase, input.userId, validation.valeur.commune);
     return terminer(supabase, input.userId, lot.valeur);
   }
 
@@ -168,7 +184,10 @@ export async function enregistrerFichePour(input: {
       slug: slugCree,
       ...valeurs,
     });
-    if (!error) return terminer(supabase, input.userId, lot.valeur);
+    if (!error) {
+      await memoriserCommune(supabase, input.userId, validation.valeur.commune);
+      return terminer(supabase, input.userId, lot.valeur);
+    }
     if (refuseParRls(error)) return refus();
     if (conflitProprietaire(error)) {
       const existante = await ficheDuProprietaire(supabase, input.userId);
@@ -182,6 +201,7 @@ export async function enregistrerFichePour(input: {
         if (refuseParRls(maj)) return refus();
         throw maj;
       }
+      await memoriserCommune(supabase, input.userId, validation.valeur.commune);
       return terminer(supabase, input.userId, lot.valeur);
     }
     if (!conflitSlug(error) || essai === 4) throw error;
