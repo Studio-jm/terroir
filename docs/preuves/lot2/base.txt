@@ -21,7 +21,8 @@ supprimer_mon_compte avec des photos : 403 42501
 « Direct deletion from storage tables is not allowed. Use the Storage API instead. »
 Même résultat après retrait des fichiers par l'API Storage. La fonction échoue sur le DELETE SQL, même sans ligne.
 
-Migration corrective non appliquée :
-supabase/migrations/20261013215000_supprimer_compte_storage_api.sql
+Migration corrective appliquée : supabase/migrations/20261013215253_supprimer_compte_storage_api.sql
 
-Comptage après nettoyage : comptes 0, fiches 0, photos 0, actualités 0, fermetures 0, contacts 0, storage.objects du bucket photos-exploitations 0, revelations_contact 0.
+Suppression par le formulaire « Supprimer le compte » sur l'aperçu ac40a8c, compte lot2-ui@example.com, fiche ferme-interface, une photo « Photo de la suppression, exemple fictif ».
+Le POST du formulaire aboutit sur l'accueil. La reconnexion répond « identifiants invalides ».
+Comptage : comptes 0, fiches 0, photos 0, actualités 0, fermetures 0, contacts 0, fichiers du bucket 0, revelations_contact 0.

@@ -140,7 +140,7 @@ test("la révélation est limitée en débit", () => {
 
 test("la correction retire le delete direct sur storage.objects", () => {
   const sql = readFileSync(
-    new URL("../supabase/migrations/20261013215000_supprimer_compte_storage_api.sql", import.meta.url),
+    new URL("../supabase/migrations/20261013215253_supprimer_compte_storage_api.sql", import.meta.url),
     "utf8",
   );
   assert.doesNotMatch(sql, /storage\.objects/);
