@@ -9,6 +9,8 @@ import {
   type LiensSoutien,
 } from "@/lib/exploitation";
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return listExploitations().map((e) => ({ slug: e.slug }));
 }
