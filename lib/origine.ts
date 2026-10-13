@@ -1,5 +1,5 @@
 function origineFixe(): string | null {
-  const raw = process.env.AUTH_URL;
+  const raw = process.env.NEXT_PUBLIC_SITE_URL;
   if (!raw) return null;
   try {
     const url = new URL(raw);
@@ -14,14 +14,12 @@ function premier(valeur: string | null): string {
   return valeur?.split(",")[0]?.trim() ?? "";
 }
 
-/** Origine utilisée dans les liens magiques. N'accepte pas un en-tête Host arbitraire. */
+/** Origine des liens de confirmation. N'accepte pas un en-tête Host arbitraire. */
 export function origineDepuis(entetes: {
   get(name: string): string | null;
 }): string {
   const fixe = origineFixe();
-  const host = premier(
-    entetes.get("x-forwarded-host") ?? entetes.get("host"),
-  );
+  const host = premier(entetes.get("x-forwarded-host") ?? entetes.get("host"));
 
   if (!process.env.VERCEL) {
     if (
@@ -46,5 +44,5 @@ export function origineDepuis(entetes: {
     return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
   }
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-  return "http://localhost:3000";
+  return "https://terroir-beryl.vercel.app";
 }

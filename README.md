@@ -4,7 +4,7 @@ Next.js App Router + TypeScript (strict). Auth will live in `app/(auth)/` later.
 
 Public exploitation page: `/e/[slug]` (demo: `/e/ferme-du-serre`).
 
-Producer accounts: `/inscription`, `/connexion`, `/espace`. Magic link, no password.
+Producer accounts: `/inscription`, `/connexion`, `/espace` (Supabase Auth, e-mail and password).
 
 ```bash
 npm i
@@ -12,6 +12,4 @@ npm run dev
 npm run build
 ```
 
-Local and CI need no secrets: accounts are stored in `.data/store.json`, and the sign-in link is printed in the server console (and shown on the page in development).
-
-Production on Vercel needs `AUTH_SECRET`, `DATABASE_URL` (Neon Postgres), `RESEND_API_KEY` and `EMAIL_FROM`. See `.env.example`. The app creates its tables on first use.
+Without `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, the site still builds and shows the demo exploitations. Account pages explain that Supabase is not configured. See `.env.example`. Schema: `supabase/migrations`.

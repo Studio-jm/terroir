@@ -34,9 +34,6 @@ yarn-error.log*
 .env*
 !.env.example
 
-# stockage local des comptes (repli sans DATABASE_URL)
-.data/
-
 # vercel
 .vercel
 

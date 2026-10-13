@@ -1,12 +1,27 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { utilisateurCourant } from "@/lib/session";
+import {
+  identifiantsSupabase,
+  MESSAGE_SUPABASE_MANQUANT,
+} from "@/lib/supabase/env";
+import { utilisateurCourant } from "@/lib/supabase/session";
 
 export const metadata: Metadata = {
   title: "Mon espace — Terroir",
 };
 
 export default async function EspacePage() {
+  if (!identifiantsSupabase()) {
+    return (
+      <main>
+        <h1>Mon espace</h1>
+        <p className="erreur" role="alert">
+          {MESSAGE_SUPABASE_MANQUANT}
+        </p>
+      </main>
+    );
+  }
+
   const utilisateur = await utilisateurCourant();
   if (!utilisateur) redirect("/connexion");
 

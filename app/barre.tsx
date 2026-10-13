@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { deconnecter } from "@/app/actions/auth";
-import { utilisateurCourant } from "@/lib/session";
+import { BoutonDeconnexion } from "@/app/bouton-deconnexion";
+import { utilisateurCourant } from "@/lib/supabase/session";
 
 export async function Barre() {
   const utilisateur = await utilisateurCourant();
@@ -12,9 +12,7 @@ export async function Barre() {
         {utilisateur ? (
           <>
             <Link href="/espace">Mon espace</Link>
-            <form action={deconnecter}>
-              <button type="submit">Déconnexion</button>
-            </form>
+            <BoutonDeconnexion />
           </>
         ) : (
           <>
