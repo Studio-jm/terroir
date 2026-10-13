@@ -1,0 +1,27 @@
+Aperçu https://terroir-jg55j5k9t-mullerjessy-3879s-projects.vercel.app/e/ferme-lot2-a
+Comptes lot2-a@example.com et lot2-b@example.com.
+
+(a) Deux photos avec texte alternatif visibles dans le HTML :
+Chèvre au pré, exemple fictif
+Champ de blé au soleil, exemple fictif
+La 7e ligne est refusée : 400 P0001 « six photos maximum ».
+Un fichier de plus de 5 Mo est refusé : 413 EntityTooLarge.
+
+(b) Le compte B ne peut pas écrire dans le dossier de A : 403, RLS storage.
+Le compte B ne peut pas insérer une ligne de photo pour A : 403 42501.
+La suppression Storage par B renvoie une liste vide et le fichier reste lisible (HTTP 200).
+
+(e) Quatre actualités en base. Les trois dernières :
+Actu octobre modifiée (2026-10-01)
+Actu 2026-08-01
+Actu 2026-06-01
+« Actu mars ancienne » est absente du HTML. Création, modification et suppression ont répondu 201 ou 200.
+
+supprimer_mon_compte avec des photos : 403 42501
+« Direct deletion from storage tables is not allowed. Use the Storage API instead. »
+Même résultat après retrait des fichiers par l'API Storage. La fonction échoue sur le DELETE SQL, même sans ligne.
+
+Migration corrective non appliquée :
+supabase/migrations/20261013215000_supprimer_compte_storage_api.sql
+
+Comptage après nettoyage : comptes 0, fiches 0, photos 0, actualités 0, fermetures 0, contacts 0, storage.objects du bucket photos-exploitations 0, revelations_contact 0.

@@ -138,6 +138,19 @@ test("la révélation est limitée en débit", () => {
   assert.equal(autoriserRevelation("203.0.113.9", 2_000, memoire), true);
 });
 
+test("la correction retire le delete direct sur storage.objects", () => {
+  const sql = readFileSync(
+    new URL("../supabase/migrations/20261013215000_supprimer_compte_storage_api.sql", import.meta.url),
+    "utf8",
+  );
+  assert.doesNotMatch(sql, /storage\.objects/);
+  assert.match(sql, /delete from public\.actualites where owner_id = auth\.uid\(\)/);
+  assert.match(sql, /delete from public\.fermetures where owner_id = auth\.uid\(\)/);
+  assert.match(sql, /delete from public\.photos_exploitation where owner_id = auth\.uid\(\)/);
+  assert.match(sql, /delete from auth\.users where id = auth\.uid\(\)/);
+  assert.doesNotMatch(sql, /service_role/);
+});
+
 test("la suppression de compte retire photos, actualités et fermetures", () => {
   const sql = readFileSync(
     new URL("../supabase/migrations/20261013214257_fiche_lot2.sql", import.meta.url),

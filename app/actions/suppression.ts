@@ -81,6 +81,35 @@ export async function supprimerCompte(
     return { erreur: "La suppression n'a pas abouti. Réessayez.", message: "" };
   }
 
+  const { data: photos, error: lecture } = await supabase
+    .from("photos_exploitation")
+    .select("chemin")
+    .eq("owner_id", utilisateur.id);
+  if (lecture) {
+    console.error("[terroir] lecture des photos", lecture);
+    return { erreur: "La suppression n'a pas abouti. Réessayez.", message: "" };
+  }
+  const chemins = new Set(
+    (photos ?? [])
+      .map((photo) => (typeof photo.chemin === "string" ? photo.chemin : ""))
+      .filter(Boolean),
+  );
+  const { data: fichiers } = await supabase.storage
+    .from("photos-exploitations")
+    .list(utilisateur.id);
+  for (const fichier of fichiers ?? []) {
+    if (fichier.name) chemins.add(`${utilisateur.id}/${fichier.name}`);
+  }
+  if (chemins.size > 0) {
+    const { error: stockage } = await supabase.storage
+      .from("photos-exploitations")
+      .remove([...chemins]);
+    if (stockage) {
+      console.error("[terroir] suppression des photos", stockage);
+      return { erreur: "La suppression n'a pas abouti. Réessayez.", message: "" };
+    }
+  }
+
   const { error } = await supabase.rpc("supprimer_mon_compte");
   if (error) {
     console.error("[terroir] suppression de compte", error);
