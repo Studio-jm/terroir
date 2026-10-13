@@ -5,12 +5,22 @@ import { identifiantsSupabase } from "@/lib/supabase/env";
 
 const slugsConnus = new Set(listExploitations().map((e) => e.slug));
 
-function reponseFicheInconnue(request: NextRequest): NextResponse | null {
-  const match = request.nextUrl.pathname.match(/^\/e\/([^/]+)\/?$/);
-  if (!match || slugsConnus.has(decodeURIComponent(match[1]))) return null;
+function reponseFicheInconnue(
+  request: NextRequest,
+  slugsDynamiques: boolean,
+): NextResponse | null {
   const url = request.nextUrl.clone();
+  const inconnu = url.pathname.match(/^\/e\/([^/]+)\/?$/);
+  const slugInconnu = Boolean(
+    inconnu && !slugsConnus.has(decodeURIComponent(inconnu[1])),
+  );
+  const visiteDirecte = url.pathname === "/fiche-introuvable";
+  if (!visiteDirecte && !(slugInconnu && !slugsDynamiques)) return null;
+
   url.pathname = "/fiche-introuvable";
-  return NextResponse.rewrite(url, { status: 404 });
+  const response = NextResponse.rewrite(url, { status: 404 });
+  response.headers.set("x-robots-tag", "noindex");
+  return response;
 }
 
 function recopierEntetesSession(
@@ -28,10 +38,9 @@ function recopierEntetesSession(
 
 export async function proxy(request: NextRequest) {
   const ids = identifiantsSupabase();
-  // Sans Supabase, seuls les slugs de démo existent : une autre adresse /e/…
-  // reste le message « fiche introuvable » de main. Avec Supabase, la page
-  // dynamique tranche (démo, fiche du producteur, ou notFound).
-  const ficheInconnue = ids ? null : reponseFicheInconnue(request);
+  // Sans Supabase, seuls les slugs de démo existent. Avec Supabase, la page
+  // dynamique tranche pour /e/[slug]. /fiche-introuvable reste un 404 direct.
+  const ficheInconnue = reponseFicheInconnue(request, Boolean(ids));
   if (!ids) return ficheInconnue ?? NextResponse.next({ request });
 
   let supabaseResponse = NextResponse.next({ request });
@@ -76,5 +85,7 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/e/:path*",
+    "/fiche-introuvable",
   ],
 };
