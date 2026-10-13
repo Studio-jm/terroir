@@ -1,25 +1,19 @@
 import { notFound } from "next/navigation";
-import { LienAccueil } from "../../lien-accueil";
 import type { Metadata } from "next";
+import { lienContact } from "@/lib/fiche-regles";
 import {
-  getExploitationBySlug,
-  listExploitations,
   LIEN_SOUTIEN_LABELS,
   type Exploitation,
   type LiensSoutien,
 } from "@/lib/exploitation";
-
-export const dynamicParams = false;
-
-export function generateStaticParams() {
-  return listExploitations().map((e) => ({ slug: e.slug }));
-}
+import { exploitationPublique } from "@/lib/publications";
+import { LienAccueil } from "../../lien-accueil";
 
 export async function generateMetadata({
   params,
 }: PageProps<"/e/[slug]">): Promise<Metadata> {
   const { slug } = await params;
-  const exploitation = getExploitationBySlug(slug);
+  const exploitation = await exploitationPublique(slug);
   if (!exploitation) {
     return { title: "Exploitation introuvable" };
   }
@@ -30,12 +24,23 @@ export default async function ExploitationPage({
   params,
 }: PageProps<"/e/[slug]">) {
   const { slug } = await params;
-  const exploitation = getExploitationBySlug(slug);
+  const exploitation = await exploitationPublique(slug);
   if (!exploitation) {
     notFound();
   }
 
   return <ExploitationView exploitation={exploitation} />;
+}
+
+function ContactTexte({ contact }: { contact: string }) {
+  const href = lienContact(contact);
+  if (!href) return contact;
+  const externe = href.startsWith("http://") || href.startsWith("https://");
+  return (
+    <a href={href} rel={externe ? "noreferrer" : undefined}>
+      {contact}
+    </a>
+  );
 }
 
 function ExploitationView({ exploitation }: { exploitation: Exploitation }) {
@@ -63,6 +68,15 @@ function ExploitationView({ exploitation }: { exploitation: Exploitation }) {
           <p key={p}>{p}</p>
         ))}
       </section>
+
+      {exploitation.contact ? (
+        <section>
+          <h2>Contact</h2>
+          <p>
+            <ContactTexte contact={exploitation.contact} />
+          </p>
+        </section>
+      ) : null}
 
       <section>
         <h2>Produits</h2>

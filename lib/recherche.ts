@@ -8,8 +8,9 @@ export function plier(value: string): string {
   return value.normalize("NFD").replace(MARQUES, "").toLowerCase();
 }
 
-/** Commune lue après le code postal (adresse géo, sinon lieux). */
+/** Commune saisie par le producteur, sinon lue après le code postal. */
 export function communeDe(exploitation: Exploitation): string {
+  if (exploitation.commune?.trim()) return exploitation.commune.trim();
   const adresses = [
     exploitation.geo.address,
     ...exploitation.lieux.map((lieu) => lieu.address),

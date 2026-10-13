@@ -1,10 +1,11 @@
 import { Suspense } from "react";
-import { listExploitations, type Exploitation } from "@/lib/exploitation";
+import type { Exploitation } from "@/lib/exploitation";
+import { listExploitationsPubliques } from "@/lib/publications";
 import { ListeExploitations } from "./liste-exploitations";
 import { RechercheExploitations } from "./recherche-exploitations";
 
-export default function Home() {
-  const exploitations = listExploitations();
+export default async function Home() {
+  const exploitations = await listExploitationsPubliques();
 
   return (
     <main>
