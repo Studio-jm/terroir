@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { FormulaireFiche } from "@/app/espace/formulaire-fiche";
+import { SuppressionCompte } from "@/app/espace/suppression";
 import { ficheVide, type ValeursFiche } from "@/lib/etat-fiche";
 import { clientFiches, ficheDuProprietaire } from "@/lib/fiches";
 import {
@@ -66,6 +67,7 @@ export default async function EspacePage() {
         <h2>{valeurs.slug ? "Modifier votre fiche" : "Créer votre fiche"}</h2>
         <FormulaireFiche valeurs={valeurs} />
       </section>
+      <SuppressionCompte aUneFiche={Boolean(valeurs.slug)} />
     </main>
   );
 }
