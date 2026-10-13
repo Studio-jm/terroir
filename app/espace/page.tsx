@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { CoquePage } from "@/app/coque-page";
 import { FormulaireFiche } from "@/app/espace/formulaire-fiche";
+import { SuppressionCompte } from "@/app/espace/suppression";
 import { ficheVide, type ValeursFiche } from "@/lib/etat-fiche";
 import { clientFiches, fichePourEspace } from "@/lib/fiches";
 import {
@@ -16,12 +18,14 @@ export const metadata: Metadata = {
 export default async function EspacePage() {
   if (!identifiantsSupabase()) {
     return (
-      <main>
-        <h1>Mon espace</h1>
-        <p className="erreur" role="alert">
-          {MESSAGE_SUPABASE_MANQUANT}
-        </p>
-      </main>
+      <CoquePage large>
+        <h1 className="text-3xl leading-tight md:text-5xl">Mon espace</h1>
+        <div className="panneau">
+          <p className="erreur" role="alert">
+            {MESSAGE_SUPABASE_MANQUANT}
+          </p>
+        </div>
+      </CoquePage>
     );
   }
 
@@ -49,25 +53,32 @@ export default async function EspacePage() {
   } catch (error) {
     console.error("[terroir] lecture de l'espace", error);
     return (
-      <main>
-        <h1>Mon espace</h1>
-        <p className="erreur" role="alert">
-          Votre fiche n&apos;a pas pu être lue. Réessayez dans un instant.
-        </p>
-      </main>
+      <CoquePage large>
+        <h1 className="text-3xl leading-tight md:text-5xl">Mon espace</h1>
+        <div className="panneau">
+          <p className="erreur" role="alert">
+            Votre fiche n&apos;a pas pu être lue. Réessayez dans un instant.
+          </p>
+        </div>
+      </CoquePage>
     );
   }
 
   return (
-    <main>
-      <h1>Mon espace</h1>
-      <p>
+    <CoquePage large>
+      <h1 className="text-3xl leading-tight md:text-5xl">Mon espace</h1>
+      <p className="text-base leading-relaxed text-encre-douce">
         Connecté avec <strong>{utilisateur.email}</strong>.
       </p>
-      <section>
-        <h2>{valeurs.slug ? "Modifier votre fiche" : "Créer votre fiche"}</h2>
+      <section className="panneau">
+        <h2 className="text-2xl">
+          {valeurs.slug ? "Modifier votre fiche" : "Créer votre fiche"}
+        </h2>
         <FormulaireFiche valeurs={valeurs} />
       </section>
-    </main>
+      <div className="panneau mt-4">
+        <SuppressionCompte aUneFiche={Boolean(valeurs.slug)} />
+      </div>
+    </CoquePage>
   );
 }
