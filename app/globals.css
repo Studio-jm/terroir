@@ -151,6 +151,11 @@ section {
   margin: 0;
 }
 
+.aide {
+  margin: 0;
+  color: #444;
+}
+
 .succes {
   margin: 0;
 }

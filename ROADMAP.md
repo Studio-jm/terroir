@@ -21,9 +21,11 @@ Faite par la pull request de recherche et filtre sur l'accueil.
 
 Le site est en ligne : [terroir-beryl.vercel.app](https://terroir-beryl.vercel.app).
 
-## Étape 3
+## Étape 3 — faite
 
-Comptes producteurs (inscription, connexion et déconnexion par lien magique) et espace producteur : création puis modification de sa fiche Exploitation.
+Comptes producteurs (inscription, connexion et déconnexion par e-mail) et espace producteur : création puis modification de sa fiche Exploitation.
+
+Faite par les pull requests des comptes et de l'espace producteur.
 
 ## Étape 4
 

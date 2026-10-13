@@ -5,13 +5,17 @@ import { identifiantsSupabase } from "@/lib/supabase/env";
 
 const slugsConnus = new Set(listExploitations().map((e) => e.slug));
 
-function reponseFicheInconnue(request: NextRequest): NextResponse | null {
+function reponseFicheInconnue(
+  request: NextRequest,
+  slugsDynamiques: boolean,
+): NextResponse | null {
   const url = request.nextUrl.clone();
   const inconnu = url.pathname.match(/^\/e\/([^/]+)\/?$/);
   const slugInconnu = Boolean(
     inconnu && !slugsConnus.has(decodeURIComponent(inconnu[1])),
   );
-  if (!slugInconnu && url.pathname !== "/fiche-introuvable") return null;
+  const visiteDirecte = url.pathname === "/fiche-introuvable";
+  if (!visiteDirecte && !(slugInconnu && !slugsDynamiques)) return null;
 
   url.pathname = "/fiche-introuvable";
   const response = NextResponse.rewrite(url, { status: 404 });
@@ -33,8 +37,10 @@ function recopierEntetesSession(
 }
 
 export async function proxy(request: NextRequest) {
-  const ficheInconnue = reponseFicheInconnue(request);
   const ids = identifiantsSupabase();
+  // Sans Supabase, seuls les slugs de démo existent. Avec Supabase, la page
+  // dynamique tranche pour /e/[slug]. /fiche-introuvable reste un 404 direct.
+  const ficheInconnue = reponseFicheInconnue(request, Boolean(ids));
   if (!ids) return ficheInconnue ?? NextResponse.next({ request });
 
   let supabaseResponse = NextResponse.next({ request });
