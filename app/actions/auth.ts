@@ -10,6 +10,7 @@ import {
   type EtatCompte,
 } from "@/lib/etat-compte";
 import { origineDepuis } from "@/lib/origine";
+import { piegeRempli } from "@/lib/piege";
 import { MESSAGE_SUPABASE_MANQUANT } from "@/lib/supabase/env";
 import { creerClientServeur } from "@/lib/supabase/server";
 
@@ -52,7 +53,7 @@ export async function inscrire(
   const motDePasse = texte(formData, "mot_de_passe");
   const confirmation = texte(formData, "confirmation");
   const valeurs = { email: emailBrut };
-  if (texte(formData, "site_web").trim()) {
+  if (piegeRempli(formData)) {
     return {
       erreurs: {},
       valeurs,
@@ -115,7 +116,7 @@ export async function connecter(
   const emailBrut = texte(formData, "email").slice(0, 254);
   const motDePasse = texte(formData, "mot_de_passe");
   const valeurs = { email: emailBrut };
-  if (texte(formData, "site_web").trim()) {
+  if (piegeRempli(formData)) {
     return {
       erreurs: { formulaire: "Adresse ou mot de passe incorrect." },
       valeurs,

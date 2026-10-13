@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useActionState } from "react";
+import { ChampPiege } from "@/app/champ-piege";
 import { enregistrerFiche } from "@/app/actions/fiche";
 import {
   etatInitial,
@@ -20,6 +21,8 @@ export function FormulaireFiche({ valeurs }: { valeurs: ValeursFiche }) {
     etatInitial(valeurs),
   );
   const lien = lienPublic(state.slugPublic);
+  const erreurs = pending ? {} : state.erreurs;
+  const message = pending ? "" : state.message;
 
   return (
     <form action={formAction} className="formulaire" noValidate>
@@ -32,7 +35,7 @@ export function FormulaireFiche({ valeurs }: { valeurs: ValeursFiche }) {
       <Champ
         id="nom"
         label="Nom"
-        erreur={state.erreurs.nom}
+        erreur={erreurs.nom}
         defaultValue={state.valeurs.nom}
         maxLength={80}
         autoComplete="organization"
@@ -40,7 +43,7 @@ export function FormulaireFiche({ valeurs }: { valeurs: ValeursFiche }) {
       <Champ
         id="commune"
         label="Commune"
-        erreur={state.erreurs.commune}
+        erreur={erreurs.commune}
         defaultValue={state.valeurs.commune}
         maxLength={80}
         autoComplete="address-level2"
@@ -49,15 +52,15 @@ export function FormulaireFiche({ valeurs }: { valeurs: ValeursFiche }) {
         id="produits"
         label="Produits"
         aide="Séparez les produits par des virgules."
-        erreur={state.erreurs.produits}
+        erreur={erreurs.produits}
         defaultValue={state.valeurs.produits}
         maxLength={500}
       />
       <Champ
         id="contact"
         label="Contact"
-        aide="E-mail, téléphone français ou adresse web."
-        erreur={state.erreurs.contact}
+        aide="E-mail, téléphone français, ou adresse web (exemple.org, www.exemple.org, https://exemple.org)."
+        erreur={erreurs.contact}
         defaultValue={state.valeurs.contact}
         maxLength={200}
       />
@@ -69,9 +72,9 @@ export function FormulaireFiche({ valeurs }: { valeurs: ValeursFiche }) {
           rows={8}
           maxLength={2000}
           defaultValue={state.valeurs.description}
-          aria-invalid={state.erreurs.description ? true : undefined}
+          aria-invalid={erreurs.description ? true : undefined}
           aria-describedby={
-            state.erreurs.description
+            erreurs.description
               ? "description-aide description-erreur"
               : "description-aide"
           }
@@ -79,31 +82,21 @@ export function FormulaireFiche({ valeurs }: { valeurs: ValeursFiche }) {
         <p id="description-aide" className="aide">
           Les retours à la ligne créent de nouveaux paragraphes.
         </p>
-        {state.erreurs.description ? (
+        {erreurs.description ? (
           <p id="description-erreur" className="erreur" role="alert">
-            {state.erreurs.description}
+            {erreurs.description}
           </p>
         ) : null}
       </div>
-      <div className="piege">
-        <label htmlFor="site_web">Site web</label>
-        <input
-          id="site_web"
-          name="site_web"
-          type="text"
-          tabIndex={-1}
-          autoComplete="off"
-          defaultValue=""
-        />
-      </div>
-      {state.erreurs.formulaire ? (
+      <ChampPiege />
+      {erreurs.formulaire ? (
         <p className="erreur" role="alert">
-          {state.erreurs.formulaire}
+          {erreurs.formulaire}
         </p>
       ) : null}
-      {state.message ? (
+      {message ? (
         <p className="succes" role="status">
-          {state.message}
+          {message}
         </p>
       ) : null}
       {lien ? (
