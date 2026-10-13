@@ -1,7 +1,7 @@
 {
   "requestedUrl": "http://127.0.0.1:3456/",
   "finalUrl": "http://127.0.0.1:3456/",
-  "fetchTime": "2026-10-13T14:14:44.649Z",
+  "fetchTime": "2026-10-13T14:24:17.587Z",
   "formFactor": "mobile",
   "screenEmulation": {
     "mobile": true,
@@ -20,12 +20,13 @@
   },
   "scores": {
     "accessibility": 1,
-    "performance": 0.95
+    "performance": 0.94
   },
   "metrics": {
-    "lcp": "3.0 s",
+    "lcp": "3.1 s",
     "fcp": "0.8 s",
     "cls": "0",
-    "tbt": "30 ms"
+    "tbt": "20 ms",
+    "note": "One mobile run on next start after rebase onto main 329713f. Home is dynamic because listExploitationsPubliques calls connection()."
   }
 }
