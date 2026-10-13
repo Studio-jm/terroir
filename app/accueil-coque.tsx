@@ -110,7 +110,7 @@ export function AccueilCoque({
             Terroir
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-creme">
-            Photos libres de droits, publiées sur Unsplash.
+            Photos publiées sur Unsplash, {credits[0].licence}.
           </p>
           <ul className="mt-3 space-y-1 text-sm leading-relaxed">
             {credits.map((photo) => (

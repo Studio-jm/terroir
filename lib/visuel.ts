@@ -4,6 +4,7 @@ export type CreditPhoto = {
   auteur: string;
   profil: string;
   page: string;
+  licence: "Unsplash License";
 };
 
 export type Etape = {
@@ -22,9 +23,8 @@ export const photoBandeau: CreditPhoto = {
   alt: "Champ de blé mûr au soleil, avec un arbre et des collines.",
   auteur: "Federico Respini",
   profil: lien("https://unsplash.com/@federicorespini"),
-  page: lien(
-    "https://unsplash.com/photos/brown-field-near-tree-during-daytime-sYffw0LNr7s",
-  ),
+  page: "https://unsplash.com/photos/brown-field-near-tree-during-daytime-sYffw0LNr7s",
+  licence: "Unsplash License",
 };
 
 const photosParSlug: Record<string, CreditPhoto> = {
@@ -33,25 +33,24 @@ const photosParSlug: Record<string, CreditPhoto> = {
     alt: "Chèvre blanche au collier, dans l'herbe.",
     auteur: "Nandhu Kumar",
     profil: lien("https://unsplash.com/@nandhukumarndd"),
-    page: lien(
-      "https://unsplash.com/photos/selective-focus-photography-of-white-goat-jAMcUbsTvWE",
-    ),
+    page: "https://unsplash.com/photos/selective-focus-photography-of-white-goat-jAMcUbsTvWE",
+    licence: "Unsplash License",
   },
   "ferme-des-nuages": {
     src: "/photos/brebis.jpg",
     alt: "Troupeau de moutons blancs au pré, sous un ciel bleu.",
     auteur: "Sam Carter",
     profil: lien("https://unsplash.com/@samdc"),
-    page: lien(
-      "https://unsplash.com/photos/white-sheep-on-green-grass-during-daytime-GHOiyov2TSQ",
-    ),
+    page: "https://unsplash.com/photos/white-sheep-on-green-grass-during-daytime-GHOiyov2TSQ",
+    licence: "Unsplash License",
   },
   "rucher-de-nulle-part": {
     src: "/photos/miel.jpg",
     alt: "Bocal de miel avec un rayon et une cuillère en bois.",
     auteur: "Art Rachen",
     profil: lien("https://unsplash.com/@artrachen"),
-    page: lien("https://unsplash.com/photos/izi5AnlbRIA"),
+    page: "https://unsplash.com/photos/izi5AnlbRIA",
+    licence: "Unsplash License",
   },
 };
 
