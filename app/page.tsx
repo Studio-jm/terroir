@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import type { Exploitation } from "@/lib/exploitation";
 import { listExploitationsPubliques } from "@/lib/publications";
+import { AccueilCoque } from "./accueil-coque";
+import { ChampRecherche } from "./champ-recherche";
 import { ListeExploitations } from "./liste-exploitations";
 import { RechercheExploitations } from "./recherche-exploitations";
 
@@ -8,14 +10,15 @@ export default async function Home() {
   const exploitations = await listExploitationsPubliques();
 
   return (
-    <main>
-      <h1>Terroir</h1>
-      <p>Plateforme petits producteurs — en construction.</p>
-      <Suspense fallback={<RechercheFallback exploitations={exploitations} />}>
-        <RechercheExploitations exploitations={exploitations} />
-      </Suspense>
-    </main>
+    <Suspense fallback={<RechercheFallback exploitations={exploitations} />}>
+      <RechercheExploitations exploitations={exploitations} />
+    </Suspense>
   );
+}
+
+function annonceDe(count: number): string {
+  if (count === 1) return "1 exploitation";
+  return `${count} exploitations`;
 }
 
 function RechercheFallback({
@@ -23,33 +26,15 @@ function RechercheFallback({
 }: {
   exploitations: Exploitation[];
 }) {
-  const annonce =
-    exploitations.length === 1
-      ? "1 exploitation"
-      : `${exploitations.length} exploitations`;
-
   return (
-    <section>
-      <h2>Exploitations</h2>
-      <form className="recherche" role="search">
-        <label htmlFor="recherche-exploitation">
-          Rechercher par nom, description, lieu ou produit
-        </label>
-        <div className="recherche-ligne">
-          <input
-            id="recherche-exploitation"
-            name="q"
-            type="search"
-            readOnly
-            defaultValue=""
-          />
-          <button type="button" disabled>
-            Effacer
-          </button>
-        </div>
-      </form>
-      <p className="resultats">{annonce}</p>
-      <ListeExploitations exploitations={exploitations} />
-    </section>
+    <AccueilCoque
+      recherche={<ChampRecherche value="" readOnly />}
+      annonce={
+        <p id="annonce-resultats" className="mt-3 text-base" role="status">
+          {annonceDe(exploitations.length)}
+        </p>
+      }
+      liste={<ListeExploitations exploitations={exploitations} />}
+    />
   );
 }

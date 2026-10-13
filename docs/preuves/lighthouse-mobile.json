@@ -1,0 +1,32 @@
+{
+  "requestedUrl": "http://127.0.0.1:3456/",
+  "finalUrl": "http://127.0.0.1:3456/",
+  "fetchTime": "2026-10-13T14:24:17.587Z",
+  "formFactor": "mobile",
+  "screenEmulation": {
+    "mobile": true,
+    "width": 412,
+    "height": 823,
+    "deviceScaleFactor": 1.75,
+    "disabled": false
+  },
+  "throttling": {
+    "rttMs": 150,
+    "throughputKbps": 1638.4,
+    "requestLatencyMs": 562.5,
+    "downloadThroughputKbps": 1474.5600000000002,
+    "uploadThroughputKbps": 675,
+    "cpuSlowdownMultiplier": 4
+  },
+  "scores": {
+    "accessibility": 1,
+    "performance": 0.94
+  },
+  "metrics": {
+    "lcp": "3.1 s",
+    "fcp": "0.8 s",
+    "cls": "0",
+    "tbt": "20 ms",
+    "note": "One mobile run on next start after rebase onto main 329713f. Home is dynamic because listExploitationsPubliques calls connection()."
+  }
+}
