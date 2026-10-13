@@ -5,16 +5,19 @@ import { listExploitations } from "./lib/exploitation";
 const slugsConnus = new Set(listExploitations().map((e) => e.slug));
 
 export function proxy(request: NextRequest) {
-  const match = request.nextUrl.pathname.match(/^\/e\/([^/]+)\/?$/);
-  if (!match || slugsConnus.has(decodeURIComponent(match[1]))) {
+  const url = request.nextUrl.clone();
+  const inconnu = url.pathname.match(/^\/e\/([^/]+)\/?$/);
+  if (inconnu && !slugsConnus.has(decodeURIComponent(inconnu[1]))) {
+    url.pathname = "/fiche-introuvable";
+  } else if (url.pathname !== "/fiche-introuvable") {
     return NextResponse.next();
   }
 
-  const url = request.nextUrl.clone();
-  url.pathname = "/fiche-introuvable";
-  return NextResponse.rewrite(url, { status: 404 });
+  const response = NextResponse.rewrite(url, { status: 404 });
+  response.headers.set("x-robots-tag", "noindex");
+  return response;
 }
 
 export const config = {
-  matcher: ["/e/:path*"],
+  matcher: ["/e/:path*", "/fiche-introuvable"],
 };
