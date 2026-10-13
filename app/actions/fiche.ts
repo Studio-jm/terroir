@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { enregistrerFichePour } from "@/lib/enregistrer-fiche";
 import type { EtatFiche, ValeursFiche } from "@/lib/etat-fiche";
+import { champsLot1DepuisFormulaire } from "@/lib/fiche-lot1";
 import { piegeRempli } from "@/lib/piege";
 import { utilisateurCourant } from "@/lib/supabase/session";
 
@@ -20,6 +21,8 @@ function valeursDepuis(formData: FormData): ValeursFiche {
     produits: texte(formData, "produits", 600),
     contact: texte(formData, "contact", 240),
     description: texte(formData, "description", 2500),
+    lot1: champsLot1DepuisFormulaire(formData),
+    updatedAt: "",
   };
 }
 
@@ -28,6 +31,7 @@ export async function enregistrerFiche(
   formData: FormData,
 ): Promise<EtatFiche> {
   const valeurs = valeursDepuis(formData);
+  valeurs.updatedAt = _etat.valeurs.updatedAt;
   const utilisateur = await utilisateurCourant();
   if (!utilisateur) {
     return {
@@ -52,6 +56,7 @@ export async function enregistrerFiche(
         contact: valeurs.contact,
         description: valeurs.description,
       },
+      lot1: valeurs.lot1,
     });
     if (!resultat.ok) {
       return {
@@ -73,6 +78,8 @@ export async function enregistrerFiche(
         produits: resultat.fiche.produits.join(", "),
         contact: resultat.fiche.contact,
         description: resultat.fiche.description,
+        lot1: resultat.lot1,
+        updatedAt: resultat.fiche.updatedAt,
       },
       message: "Fiche enregistrée.",
       slugPublic: resultat.fiche.slug,

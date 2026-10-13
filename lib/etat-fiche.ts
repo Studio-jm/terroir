@@ -1,3 +1,6 @@
+import type { ChampsLot1, CleLot1 } from "./fiche-lot1";
+import { creerLot1Vide } from "./fiche-lot1";
+
 export type ValeursFiche = {
   slug: string;
   nom: string;
@@ -5,12 +8,20 @@ export type ValeursFiche = {
   produits: string;
   contact: string;
   description: string;
+  lot1: ChampsLot1;
+  updatedAt: string;
 };
 
 export type EtatFiche = {
   erreurs: Partial<
     Record<
-      "nom" | "commune" | "produits" | "contact" | "description" | "formulaire",
+      | "nom"
+      | "commune"
+      | "produits"
+      | "contact"
+      | "description"
+      | "formulaire"
+      | CleLot1,
       string
     >
   >;
@@ -26,6 +37,8 @@ export const ficheVide: ValeursFiche = {
   produits: "",
   contact: "",
   description: "",
+  lot1: creerLot1Vide(),
+  updatedAt: "",
 };
 
 export function etatInitial(valeurs: ValeursFiche = ficheVide): EtatFiche {

@@ -16,6 +16,11 @@ test("le pot de miel n'a le nom d'aucun champ du formulaire", () => {
     "produits",
     "contact",
     "description",
+    "presentation",
+    "telephone",
+    "email-pro",
+    "afficher-contact",
+    "lien-site",
   ]) {
     assert.equal(nomPiegeInterdit(nom), true);
   }
