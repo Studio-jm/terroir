@@ -1,0 +1,10 @@
+{
+  "requestedUrl": "https://terroir-ml79gkrgl-mullerjessy-3879s-projects.vercel.app/e/ferme-du-serre",
+  "finalUrl": "https://terroir-ml79gkrgl-mullerjessy-3879s-projects.vercel.app/e/ferme-du-serre",
+  "lighthouseVersion": "12.8.2",
+  "formFactor": "mobile",
+  "mobile": true,
+  "accessibility": 1,
+  "performance": 0.95,
+  "runtimeError": null
+}
