@@ -17,14 +17,22 @@ Recherche et filtre (nom, commune, produits) sur l'accueil, sans tenir compte de
 
 Faite par la pull request de recherche et filtre sur l'accueil.
 
+## Déploiement Vercel — fait
+
+Le site est en ligne : [terroir-beryl.vercel.app](https://terroir-beryl.vercel.app).
+
 ## Étape 3
 
-Inscription d'un producteur (formulaire de création de fiche, validation, stockage simple).
+Comptes producteurs (inscription, connexion et déconnexion par lien magique) et espace producteur : création puis modification de sa fiche Exploitation.
 
 ## Étape 4
 
-Déploiement Vercel (Colporteur), puis annonce.
+Refonte du design de l'accueil.
 
 ## Étape 5
+
+Annonce publique.
+
+## Étape 6
 
 Finitions (SEO, accessibilité, mobile).
