@@ -598,6 +598,81 @@ export function champsLot1DepuisStock(entree: {
   };
 }
 
+export function detailVide(): Lot1Valeur {
+  return {
+    presentation: null,
+    offres: [],
+    modes: [],
+    points: [],
+    horaires: { surRendezVous: false, jours: {} },
+    paiements: [],
+    labels: [],
+    telephone: null,
+    email: null,
+    afficher: false,
+    liens: {},
+  };
+}
+
+export function detailDepuisStockPublic(entree: {
+  presentation: string | null;
+  offres: unknown;
+  modes_vente: string[] | null;
+  points_vente: unknown;
+  horaires_ferme: unknown;
+  paiements: string[] | null;
+  labels: string[] | null;
+  liens: unknown;
+  telephone_public: string | null;
+  email_public: string | null;
+}): Lot1Valeur {
+  const champs = champsLot1DepuisStock({
+    presentation: entree.presentation,
+    offres: entree.offres,
+    modes_vente: entree.modes_vente,
+    points_vente: entree.points_vente,
+    horaires_ferme: entree.horaires_ferme,
+    paiements: entree.paiements,
+    labels: entree.labels,
+    liens: entree.liens,
+    telephone: entree.telephone_public,
+    email: entree.email_public,
+    afficher: Boolean(entree.telephone_public || entree.email_public),
+  });
+  const resultat = validerLot1(champs);
+  return resultat.ok ? resultat.valeur : detailVide();
+}
+
+export function htmlObfusque(texte: string): string {
+  return [...texte].map((caractere) => `&#${caractere.codePointAt(0)};`).join("");
+}
+
+const NOMS_MOIS = [
+  "janvier",
+  "février",
+  "mars",
+  "avril",
+  "mai",
+  "juin",
+  "juillet",
+  "août",
+  "septembre",
+  "octobre",
+  "novembre",
+  "décembre",
+];
+
+export function libelleMois(mois: number[]): string {
+  return mois
+    .filter((numero) => numero >= 1 && numero <= 12)
+    .map((numero) => NOMS_MOIS[numero - 1])
+    .join(", ");
+}
+
+export function libelleDe(liste: readonly (readonly [string, string])[], id: string): string {
+  return liste.find(([cle]) => cle === id)?.[1] ?? id;
+}
+
 export function libelleMiseAJour(iso: string): string {
   if (!iso) return "";
   const date = new Date(iso);

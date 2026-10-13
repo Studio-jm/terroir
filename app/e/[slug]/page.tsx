@@ -1,12 +1,9 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { BlocsFiche } from "@/app/e/[slug]/blocs-fiche";
 import { lienContact } from "@/lib/fiche-regles";
-import {
-  LIEN_SOUTIEN_LABELS,
-  type Exploitation,
-  type LiensSoutien,
-} from "@/lib/exploitation";
+import type { Exploitation } from "@/lib/exploitation";
 import { exploitationPublique } from "@/lib/publications";
 import { photoPour } from "@/lib/visuel";
 import { LienAccueil } from "../../lien-accueil";
@@ -40,17 +37,14 @@ function ContactTexte({ contact }: { contact: string }) {
   if (!href) return contact;
   const externe = href.startsWith("http://") || href.startsWith("https://");
   return (
-    <a href={href} rel={externe ? "noreferrer" : undefined}>
+            <a href={href} rel={externe ? "nofollow noopener" : undefined}>
       {contact}
     </a>
   );
 }
 
 function ExploitationView({ exploitation }: { exploitation: Exploitation }) {
-  const { nom, histoire, produits, lieux, geo, liensSoutien } = exploitation;
-  const soutienEntries = (
-    Object.entries(liensSoutien) as [keyof LiensSoutien, string][]
-  ).filter(([, url]) => Boolean(url));
+  const { nom, histoire, produits, lieux, geo } = exploitation;
   const osmHref =
     geo.lat != null && geo.lng != null
       ? `https://www.openstreetmap.org/?mlat=${geo.lat}&mlon=${geo.lng}#map=13/${geo.lat}/${geo.lng}`
@@ -100,6 +94,8 @@ function ExploitationView({ exploitation }: { exploitation: Exploitation }) {
           </section>
         ) : null}
 
+        <BlocsFiche exploitation={exploitation} />
+
         <section className="panneau">
           <h2 className="text-2xl">Produits</h2>
           <ul className="pastilles">
@@ -132,27 +128,12 @@ function ExploitationView({ exploitation }: { exploitation: Exploitation }) {
           </p>
           {osmHref ? (
             <p>
-              <a href={osmHref} rel="noreferrer">
+              <a href={osmHref} rel="nofollow noopener">
                 Voir le pin sur OpenStreetMap
               </a>
             </p>
           ) : null}
         </section>
-
-        {soutienEntries.length > 0 ? (
-          <section className="panneau">
-            <h2 className="text-2xl">Soutenir</h2>
-            <ul className="liste">
-              {soutienEntries.map(([kind, url]) => (
-                <li key={kind}>
-                  <a href={url} rel="noreferrer">
-                    {LIEN_SOUTIEN_LABELS[kind]}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
       </div>
       <Pied photo={photo} />
     </main>

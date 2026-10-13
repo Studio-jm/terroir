@@ -1,14 +1,24 @@
 "use client";
 
+import { CATEGORIES, MODES } from "@/lib/fiche-lot1";
+
 export function ChampRecherche({
   value,
+  categorie = "",
+  mode = "",
   readOnly = false,
   onValue,
+  onCategorie,
+  onMode,
   onClear,
 }: {
   value: string;
+  categorie?: string;
+  mode?: string;
   readOnly?: boolean;
   onValue?: (value: string) => void;
+  onCategorie?: (value: string) => void;
+  onMode?: (value: string) => void;
   onClear?: () => void;
 }) {
   return (
@@ -46,6 +56,44 @@ export function ChampRecherche({
         >
           Effacer
         </button>
+      </div>
+      <div className="mt-3 flex flex-wrap gap-3">
+        <label className="text-sm font-semibold text-encre" htmlFor="filtre-categorie">
+          Catégorie
+          <select
+            id="filtre-categorie"
+            name="categorie"
+            className="mt-1 block rounded border-2 border-encre bg-papier px-3 py-2 text-base font-normal text-encre"
+            value={readOnly ? "" : categorie}
+            disabled={readOnly}
+            onChange={onCategorie ? (event) => onCategorie(event.target.value) : undefined}
+          >
+            <option value="">Toutes</option>
+            {CATEGORIES.map(([id, label]) => (
+              <option key={id} value={id}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="text-sm font-semibold text-encre" htmlFor="filtre-mode">
+          Mode de vente
+          <select
+            id="filtre-mode"
+            name="mode"
+            className="mt-1 block rounded border-2 border-encre bg-papier px-3 py-2 text-base font-normal text-encre"
+            value={readOnly ? "" : mode}
+            disabled={readOnly}
+            onChange={onMode ? (event) => onMode(event.target.value) : undefined}
+          >
+            <option value="">Tous</option>
+            {MODES.map(([id, label]) => (
+              <option key={id} value={id}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </label>
       </div>
     </form>
   );

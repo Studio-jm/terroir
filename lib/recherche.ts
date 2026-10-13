@@ -24,29 +24,65 @@ export function communeDe(exploitation: Exploitation): string {
 }
 
 export function hrefAvecRecherche(query: string): string {
-  if (!query) return "/";
+  return hrefRecherche({ q: query });
+}
+
+export function hrefRecherche(choix: {
+  q?: string;
+  categorie?: string;
+  mode?: string;
+}): string {
   const params = new URLSearchParams();
-  params.set("q", query);
-  return `/?${params.toString()}`;
+  const q = choix.q?.trim() ?? "";
+  if (q) params.set("q", q);
+  if (choix.categorie) params.set("categorie", choix.categorie);
+  if (choix.mode) params.set("mode", choix.mode);
+  const texte = params.toString();
+  return texte ? `/?${texte}` : "/";
 }
 
 export function filtrerExploitations(
   exploitations: Exploitation[],
   query: string,
+  choix: { categorie?: string; mode?: string } = {},
 ): Exploitation[] {
   const q = plier(query).replace(/\s+/g, " ").trim();
-  if (!q) return exploitations;
-
   return exploitations.filter((exploitation) => {
-    const champs = [
-      exploitation.nom,
-      communeDe(exploitation),
-      exploitation.histoire,
-      exploitation.departement,
-      exploitation.region,
-      ...exploitation.produits,
-      ...exploitation.lieux.flatMap((lieu) => [lieu.label, lieu.address ?? ""]),
-    ];
-    return champs.some((champ) => plier(champ).includes(q));
+    if (q) {
+      const detail = exploitation.detail;
+      const champs = [
+        exploitation.nom,
+        communeDe(exploitation),
+        exploitation.histoire,
+        exploitation.departement,
+        exploitation.region,
+        ...exploitation.produits,
+        ...exploitation.lieux.flatMap((lieu) => [lieu.label, lieu.address ?? ""]),
+        detail?.presentation ?? "",
+        ...(detail?.offres.flatMap((offre) => [offre.nom, offre.categorie]) ?? []),
+        ...(detail?.modes ?? []),
+        ...(detail?.points.flatMap((point) => [
+          point.nom,
+          point.commune,
+          point.jour,
+          point.horaires,
+        ]) ?? []),
+        ...(detail?.labels ?? []),
+      ];
+      if (!champs.some((champ) => plier(champ).includes(q))) return false;
+    }
+    if (
+      choix.categorie &&
+      !exploitation.detail?.offres.some((offre) => offre.categorie === choix.categorie)
+    ) {
+      return false;
+    }
+    if (
+      choix.mode &&
+      !exploitation.detail?.modes.some((mode) => mode === choix.mode)
+    ) {
+      return false;
+    }
+    return true;
   });
 }

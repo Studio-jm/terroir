@@ -202,6 +202,8 @@ export function ficheVersExploitation(fiche: {
   produits: string[];
   commune: string;
   contact: string;
+  detail?: Exploitation["detail"];
+  updatedAt?: string;
 }): Exploitation {
   const liensSoutien: LiensSoutien = {};
   return {
@@ -216,5 +218,7 @@ export function ficheVersExploitation(fiche: {
     liensSoutien,
     commune: fiche.commune,
     contact: fiche.contact,
+    detail: fiche.detail,
+    updatedAt: fiche.updatedAt,
   };
 }
