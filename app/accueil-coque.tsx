@@ -29,7 +29,7 @@ export function AccueilCoque({
               Le marché, près de chez vous
             </h1>
             <p className="mt-2 max-w-prose text-base leading-relaxed text-encre-douce">
-              Des fiches pour trouver un producteur. Nom, commune ou produit.
+              Des fiches pour trouver un producteur. Nom, commune, produit, catégorie ou mode de vente.
             </p>
             {recherche}
           </div>

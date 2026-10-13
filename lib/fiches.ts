@@ -1,7 +1,12 @@
 import "server-only";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { champsLot1DepuisStock, type ChampsLot1 } from "@/lib/fiche-lot1";
+import {
+  champsLot1DepuisStock,
+  detailDepuisStockPublic,
+  type ChampsLot1,
+  type Lot1Valeur,
+} from "@/lib/fiche-lot1";
 import { creerClientServeur } from "@/lib/supabase/server";
 
 export type Fiche = {
@@ -14,6 +19,7 @@ export type Fiche = {
   description: string;
   createdAt: string;
   updatedAt: string;
+  detail: Lot1Valeur;
 };
 
 type Ligne = {
@@ -26,10 +32,39 @@ type Ligne = {
   description: string;
   created_at: string;
   updated_at: string;
+  presentation: string | null;
+  offres: unknown;
+  modes_vente: string[] | null;
+  points_vente: unknown;
+  horaires_ferme: unknown;
+  paiements: string[] | null;
+  labels: string[] | null;
+  liens: unknown;
+  telephone_public: string | null;
+  email_public: string | null;
 };
 
-const COLONNES =
-  "owner_id, slug, nom, commune, produits, contact, description, created_at, updated_at";
+const COLONNES = [
+  "owner_id",
+  "slug",
+  "nom",
+  "commune",
+  "produits",
+  "contact",
+  "description",
+  "created_at",
+  "updated_at",
+  "presentation",
+  "offres",
+  "modes_vente",
+  "points_vente",
+  "horaires_ferme",
+  "paiements",
+  "labels",
+  "liens",
+  "telephone_public",
+  "email_public",
+].join(", ");
 
 export async function clientFiches(): Promise<SupabaseClient | null> {
   return creerClientServeur();
@@ -46,6 +81,7 @@ export function ligneVersFiche(ligne: Ligne): Fiche {
     description: ligne.description,
     createdAt: ligne.created_at,
     updatedAt: ligne.updated_at,
+    detail: detailDepuisStockPublic(ligne),
   };
 }
 
@@ -63,7 +99,7 @@ export async function ficheDuProprietaire(
     .eq("owner_id", ownerId)
     .maybeSingle();
   if (error) throw error;
-  return data ? ligneVersFiche(data as Ligne) : null;
+  return data ? ligneVersFiche(data as unknown as Ligne) : null;
 }
 
 export async function ficheParSlug(
@@ -76,7 +112,7 @@ export async function ficheParSlug(
     .eq("slug", slug)
     .maybeSingle();
   if (error) throw error;
-  return data ? ligneVersFiche(data as Ligne) : null;
+  return data ? ligneVersFiche(data as unknown as Ligne) : null;
 }
 
 export async function listerFiches(supabase: SupabaseClient): Promise<Fiche[]> {
@@ -85,21 +121,12 @@ export async function listerFiches(supabase: SupabaseClient): Promise<Fiche[]> {
     .select(COLONNES)
     .order("created_at", { ascending: true });
   if (error) throw error;
-  return (data ?? []).map((ligne) => ligneVersFiche(ligne as Ligne));
+  return (data ?? []).map((ligne) => ligneVersFiche(ligne as unknown as Ligne));
 }
 
-const COLONNES_ESPACE = `${COLONNES}, presentation, offres, modes_vente, points_vente, horaires_ferme, paiements, labels, liens`;
+const COLONNES_ESPACE = COLONNES;
 
-type LigneEspace = Ligne & {
-  presentation: string | null;
-  offres: unknown;
-  modes_vente: string[] | null;
-  points_vente: unknown;
-  horaires_ferme: unknown;
-  paiements: string[] | null;
-  labels: string[] | null;
-  liens: unknown;
-};
+type LigneEspace = Ligne;
 
 type LigneContact = {
   telephone: string | null;
@@ -118,14 +145,14 @@ export async function fichePourEspace(
     .maybeSingle();
   if (error) throw error;
   if (!data) return null;
-  const ligne = data as LigneEspace;
+  const ligne = data as unknown as LigneEspace;
   const { data: contact, error: erreurContact } = await supabase
     .from("contacts_producteur")
     .select("telephone, email, afficher")
     .eq("owner_id", ownerId)
     .maybeSingle();
   if (erreurContact) throw erreurContact;
-  const ligneContact = (contact ?? null) as LigneContact | null;
+  const ligneContact = (contact ?? null) as unknown as LigneContact | null;
   return {
     fiche: ligneVersFiche(ligne),
     lot1: champsLot1DepuisStock({

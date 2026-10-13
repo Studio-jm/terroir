@@ -1,0 +1,13 @@
+{
+  "url": "http://127.0.0.1:3457/e/ferme-du-serre",
+  "lighthouseVersion": "12.8.2",
+  "formFactor": "mobile",
+  "runs": [
+    {"accessibility": 1, "performance": 0.96, "runtimeError": null},
+    {"accessibility": 1, "performance": 0.97, "runtimeError": null},
+    {"accessibility": 1, "performance": 0.96, "runtimeError": null}
+  ],
+  "medianAccessibility": 1,
+  "medianPerformance": 0.96,
+  "contremaitreMedianAccessibility": 95
+}

@@ -6,9 +6,9 @@ import { hrefAvecRecherche } from "@/lib/recherche";
 
 const CLE_RECHERCHE = "terroir-recherche";
 
-export function memoriserRecherche(query: string) {
+export function memoriserRecherche(href: string) {
   try {
-    if (query) sessionStorage.setItem(CLE_RECHERCHE, query);
+    if (href && href !== "/") sessionStorage.setItem(CLE_RECHERCHE, href);
     else sessionStorage.removeItem(CLE_RECHERCHE);
   } catch {
     // sessionStorage indisponible (navigation privée, etc.)
@@ -21,7 +21,11 @@ function nePasEcouter() {
 
 function hrefAccueil(): string {
   try {
-    return hrefAvecRecherche(sessionStorage.getItem(CLE_RECHERCHE) ?? "");
+    const brut = sessionStorage.getItem(CLE_RECHERCHE) ?? "";
+    if (!brut) return "/";
+    if (brut.startsWith("/")) return brut;
+    if (brut.startsWith("?")) return `/${brut}`;
+    return hrefAvecRecherche(brut);
   } catch {
     return "/";
   }
