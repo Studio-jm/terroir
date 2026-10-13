@@ -22,6 +22,13 @@ export function communeDe(exploitation: Exploitation): string {
   return "";
 }
 
+export function hrefAvecRecherche(query: string): string {
+  if (!query) return "/";
+  const params = new URLSearchParams();
+  params.set("q", query);
+  return `/?${params.toString()}`;
+}
+
 export function filtrerExploitations(
   exploitations: Exploitation[],
   query: string,
@@ -33,7 +40,11 @@ export function filtrerExploitations(
     const champs = [
       exploitation.nom,
       communeDe(exploitation),
+      exploitation.histoire,
+      exploitation.departement,
+      exploitation.region,
       ...exploitation.produits,
+      ...exploitation.lieux.flatMap((lieu) => [lieu.label, lieu.address ?? ""]),
     ];
     return champs.some((champ) => plier(champ).includes(q));
   });
