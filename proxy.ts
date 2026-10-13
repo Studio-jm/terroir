@@ -27,8 +27,11 @@ function recopierEntetesSession(
 }
 
 export async function proxy(request: NextRequest) {
-  const ficheInconnue = reponseFicheInconnue(request);
   const ids = identifiantsSupabase();
+  // Sans Supabase, seuls les slugs de démo existent : une autre adresse /e/…
+  // reste le message « fiche introuvable » de main. Avec Supabase, la page
+  // dynamique tranche (démo, fiche du producteur, ou notFound).
+  const ficheInconnue = ids ? null : reponseFicheInconnue(request);
   if (!ids) return ficheInconnue ?? NextResponse.next({ request });
 
   let supabaseResponse = NextResponse.next({ request });
