@@ -3,6 +3,7 @@ import { LienAccueil } from "../lien-accueil";
 
 export const metadata: Metadata = {
   title: "Fiche introuvable — Terroir",
+  robots: { index: false, follow: false },
 };
 
 export default function FicheIntrouvable() {

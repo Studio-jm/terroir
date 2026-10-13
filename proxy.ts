@@ -6,11 +6,17 @@ import { identifiantsSupabase } from "@/lib/supabase/env";
 const slugsConnus = new Set(listExploitations().map((e) => e.slug));
 
 function reponseFicheInconnue(request: NextRequest): NextResponse | null {
-  const match = request.nextUrl.pathname.match(/^\/e\/([^/]+)\/?$/);
-  if (!match || slugsConnus.has(decodeURIComponent(match[1]))) return null;
   const url = request.nextUrl.clone();
+  const inconnu = url.pathname.match(/^\/e\/([^/]+)\/?$/);
+  const slugInconnu = Boolean(
+    inconnu && !slugsConnus.has(decodeURIComponent(inconnu[1])),
+  );
+  if (!slugInconnu && url.pathname !== "/fiche-introuvable") return null;
+
   url.pathname = "/fiche-introuvable";
-  return NextResponse.rewrite(url, { status: 404 });
+  const response = NextResponse.rewrite(url, { status: 404 });
+  response.headers.set("x-robots-tag", "noindex");
+  return response;
 }
 
 function recopierEntetesSession(
@@ -73,5 +79,7 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/e/:path*",
+    "/fiche-introuvable",
   ],
 };
