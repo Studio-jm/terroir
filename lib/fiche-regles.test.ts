@@ -37,6 +37,25 @@ test("refuse une fiche vide et un contact invalide", () => {
   }
 });
 
+test("normalise une adresse web sans schéma", () => {
+  const attendus = [
+    ["https://exemple.org", "https://exemple.org"],
+    ["www.exemple.org", "https://www.exemple.org"],
+    ["exemple.org", "https://exemple.org"],
+  ] as const;
+  for (const [saisi, attendu] of attendus) {
+    const resultat = validerFiche({
+      nom: "Ferme du Test",
+      commune: "Nyons",
+      produits: "miel",
+      contact: saisi,
+      description,
+    });
+    assert.equal(resultat.ok, true, saisi);
+    if (resultat.ok) assert.equal(resultat.valeur.contact, attendu);
+  }
+});
+
 test("accepte un e-mail, un téléphone ou une adresse web", () => {
   for (const valeur of [
     "ferme@example.com",
