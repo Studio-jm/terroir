@@ -3,12 +3,14 @@
 import Link from "next/link";
 import { useActionState } from "react";
 import { ChampPiege } from "@/app/champ-piege";
+import { ChampsLot1 } from "@/app/espace/champs-lot1";
 import { enregistrerFiche } from "@/app/actions/fiche";
 import {
   etatInitial,
   type EtatFiche,
   type ValeursFiche,
 } from "@/lib/etat-fiche";
+import { libelleMiseAJour } from "@/lib/fiche-lot1";
 
 function lienPublic(slug: string): string | null {
   if (!/^[a-z0-9-]{1,60}$/.test(slug)) return null;
@@ -23,6 +25,7 @@ export function FormulaireFiche({ valeurs }: { valeurs: ValeursFiche }) {
   const lien = lienPublic(state.slugPublic);
   const erreurs = pending ? {} : state.erreurs;
   const message = pending ? "" : state.message;
+  const miseAJour = libelleMiseAJour(state.valeurs.updatedAt);
 
   return (
     <form action={formAction} className="formulaire" noValidate>
@@ -59,7 +62,7 @@ export function FormulaireFiche({ valeurs }: { valeurs: ValeursFiche }) {
       <Champ
         id="contact"
         label="Contact"
-        aide="E-mail, téléphone français, ou adresse web (exemple.org, www.exemple.org, https://exemple.org)."
+        aide="Visible sur la fiche publique. E-mail, téléphone français, ou adresse web (exemple.org, www.exemple.org, https://exemple.org)."
         erreur={erreurs.contact}
         defaultValue={state.valeurs.contact}
         maxLength={200}
@@ -88,6 +91,8 @@ export function FormulaireFiche({ valeurs }: { valeurs: ValeursFiche }) {
           </p>
         ) : null}
       </div>
+      <ChampsLot1 lot1={state.valeurs.lot1} erreurs={erreurs} />
+      {miseAJour ? <p>{miseAJour}</p> : null}
       <ChampPiege />
       {erreurs.formulaire ? (
         <p className="erreur" role="alert">

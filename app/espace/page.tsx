@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { FormulaireFiche } from "@/app/espace/formulaire-fiche";
 import { ficheVide, type ValeursFiche } from "@/lib/etat-fiche";
-import { clientFiches, ficheDuProprietaire } from "@/lib/fiches";
+import { clientFiches, fichePourEspace } from "@/lib/fiches";
 import {
   identifiantsSupabase,
   MESSAGE_SUPABASE_MANQUANT,
@@ -31,17 +31,19 @@ export default async function EspacePage() {
   let valeurs: ValeursFiche = ficheVide;
   try {
     const supabase = await clientFiches();
-    const fiche = supabase
-      ? await ficheDuProprietaire(supabase, utilisateur.id)
+    const charge = supabase
+      ? await fichePourEspace(supabase, utilisateur.id)
       : null;
-    if (fiche) {
+    if (charge) {
       valeurs = {
-        slug: fiche.slug,
-        nom: fiche.nom,
-        commune: fiche.commune,
-        produits: fiche.produits.join(", "),
-        contact: fiche.contact,
-        description: fiche.description,
+        slug: charge.fiche.slug,
+        nom: charge.fiche.nom,
+        commune: charge.fiche.commune,
+        produits: charge.fiche.produits.join(", "),
+        contact: charge.fiche.contact,
+        description: charge.fiche.description,
+        lot1: charge.lot1,
+        updatedAt: charge.fiche.updatedAt,
       };
     }
   } catch (error) {

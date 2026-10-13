@@ -1,3 +1,4 @@
+import type { CleLot1 } from "./fiche-lot1";
 import type { Exploitation, LiensSoutien } from "./exploitation";
 import { plier } from "./recherche";
 
@@ -18,7 +19,7 @@ export type FicheSaisie = {
 };
 
 export type ErreursFiche = Partial<
-  Record<keyof ChampsFiche | "formulaire", string>
+  Record<keyof ChampsFiche | "formulaire" | CleLot1, string>
 >;
 
 const EMAIL =

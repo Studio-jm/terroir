@@ -1,6 +1,7 @@
 import "server-only";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { champsLot1DepuisStock, type ChampsLot1 } from "@/lib/fiche-lot1";
 import { creerClientServeur } from "@/lib/supabase/server";
 
 export type Fiche = {
@@ -85,6 +86,62 @@ export async function listerFiches(supabase: SupabaseClient): Promise<Fiche[]> {
     .order("created_at", { ascending: true });
   if (error) throw error;
   return (data ?? []).map((ligne) => ligneVersFiche(ligne as Ligne));
+}
+
+const COLONNES_ESPACE = `${COLONNES}, presentation, offres, modes_vente, points_vente, horaires_ferme, paiements, labels, liens`;
+
+type LigneEspace = Ligne & {
+  presentation: string | null;
+  offres: unknown;
+  modes_vente: string[] | null;
+  points_vente: unknown;
+  horaires_ferme: unknown;
+  paiements: string[] | null;
+  labels: string[] | null;
+  liens: unknown;
+};
+
+type LigneContact = {
+  telephone: string | null;
+  email: string | null;
+  afficher: boolean | null;
+};
+
+export async function fichePourEspace(
+  supabase: SupabaseClient,
+  ownerId: string,
+): Promise<{ fiche: Fiche; lot1: ChampsLot1 } | null> {
+  const { data, error } = await supabase
+    .from("exploitations")
+    .select(COLONNES_ESPACE)
+    .eq("owner_id", ownerId)
+    .maybeSingle();
+  if (error) throw error;
+  if (!data) return null;
+  const ligne = data as LigneEspace;
+  const { data: contact, error: erreurContact } = await supabase
+    .from("contacts_producteur")
+    .select("telephone, email, afficher")
+    .eq("owner_id", ownerId)
+    .maybeSingle();
+  if (erreurContact) throw erreurContact;
+  const ligneContact = (contact ?? null) as LigneContact | null;
+  return {
+    fiche: ligneVersFiche(ligne),
+    lot1: champsLot1DepuisStock({
+      presentation: ligne.presentation,
+      offres: ligne.offres,
+      modes_vente: ligne.modes_vente,
+      points_vente: ligne.points_vente,
+      horaires_ferme: ligne.horaires_ferme,
+      paiements: ligne.paiements,
+      labels: ligne.labels,
+      liens: ligne.liens,
+      telephone: ligneContact?.telephone ?? null,
+      email: ligneContact?.email ?? null,
+      afficher: ligneContact?.afficher ?? null,
+    }),
+  };
 }
 
 export async function slugsEnregistres(supabase: SupabaseClient): Promise<string[]> {

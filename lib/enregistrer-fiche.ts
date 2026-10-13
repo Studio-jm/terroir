@@ -2,6 +2,13 @@ import "server-only";
 
 import { listExploitations } from "@/lib/exploitation";
 import {
+  colonnesLot1,
+  ligneContact,
+  validerLot1,
+  type ChampsLot1,
+  type Lot1Valeur,
+} from "@/lib/fiche-lot1";
+import {
   deciderEnregistrement,
   slugDeNom,
   validerFiche,
@@ -14,12 +21,13 @@ import {
   codeErreur,
   ficheDuProprietaire,
   ficheParSlug,
+  fichePourEspace,
   slugsEnregistres,
   type Fiche,
 } from "@/lib/fiches";
 
 export type ResultatFiche =
-  | { ok: true; fiche: Fiche }
+  | { ok: true; fiche: Fiche; lot1: ChampsLot1 }
   | { ok: false; erreurs: ErreursFiche };
 
 function refus(): ResultatFiche {
@@ -44,11 +52,55 @@ function refuseParRls(error: { code?: string; message?: string }): boolean {
   return texte.includes("row-level security");
 }
 
+async function ecrireContact(
+  supabase: NonNullable<Awaited<ReturnType<typeof clientFiches>>>,
+  userId: string,
+  lot1: Lot1Valeur,
+): Promise<void> {
+  const { data, error } = await supabase
+    .from("exploitations")
+    .select("id")
+    .eq("owner_id", userId)
+    .maybeSingle();
+  if (error) throw error;
+  if (!data?.id) throw new Error("fiche absente après enregistrement");
+
+  const ligne = ligneContact(lot1);
+  if (!ligne) {
+    const { error: suppression } = await supabase
+      .from("contacts_producteur")
+      .delete()
+      .eq("owner_id", userId);
+    if (suppression) throw suppression;
+    return;
+  }
+  const { error: ecriture } = await supabase.from("contacts_producteur").upsert({
+    exploitation_id: data.id,
+    owner_id: userId,
+    telephone: ligne.telephone,
+    email: ligne.email,
+    afficher: ligne.afficher,
+  });
+  if (ecriture) throw ecriture;
+}
+
+async function terminer(
+  supabase: NonNullable<Awaited<ReturnType<typeof clientFiches>>>,
+  userId: string,
+  lot1: Lot1Valeur,
+): Promise<ResultatFiche> {
+  await ecrireContact(supabase, userId, lot1);
+  const charge = await fichePourEspace(supabase, userId);
+  if (!charge) return refus();
+  return { ok: true, fiche: charge.fiche, lot1: charge.lot1 };
+}
+
 export async function enregistrerFichePour(input: {
   userId: string;
   slugDemande: string;
   piege: string;
   champs: ChampsFiche;
+  lot1: ChampsLot1;
 }): Promise<ResultatFiche> {
   if (input.piege.trim()) {
     return { ok: false, erreurs: { formulaire: "Envoi refusé." } };
@@ -61,7 +113,16 @@ export async function enregistrerFichePour(input: {
   }
 
   const validation = validerFiche(input.champs);
-  if (!validation.ok) return validation;
+  const lot = validerLot1(input.lot1);
+  if (!validation.ok || !lot.ok) {
+    return {
+      ok: false,
+      erreurs: {
+        ...(validation.ok ? {} : validation.erreurs),
+        ...(lot.ok ? {} : lot.erreurs),
+      },
+    };
+  }
 
   const mienne = await ficheDuProprietaire(supabase, input.userId);
   const slug = input.slugDemande.trim();
@@ -79,6 +140,7 @@ export async function enregistrerFichePour(input: {
     produits: validation.valeur.produits,
     contact: validation.valeur.contact,
     description: validation.valeur.description,
+    ...colonnesLot1(lot.valeur),
   };
 
   if (decision === "modifier" && mienne) {
@@ -94,9 +156,7 @@ export async function enregistrerFichePour(input: {
       throw error;
     }
     if (!data) return refus();
-    const fiche = await ficheDuProprietaire(supabase, input.userId);
-    if (!fiche) return refus();
-    return { ok: true, fiche };
+    return terminer(supabase, input.userId, lot.valeur);
   }
 
   const demos = listExploitations().map((exploitation) => exploitation.slug);
@@ -108,11 +168,7 @@ export async function enregistrerFichePour(input: {
       slug: slugCree,
       ...valeurs,
     });
-    if (!error) {
-      const fiche = await ficheDuProprietaire(supabase, input.userId);
-      if (!fiche) throw new Error("fiche absente après création");
-      return { ok: true, fiche };
-    }
+    if (!error) return terminer(supabase, input.userId, lot.valeur);
     if (refuseParRls(error)) return refus();
     if (conflitProprietaire(error)) {
       const existante = await ficheDuProprietaire(supabase, input.userId);
@@ -126,9 +182,7 @@ export async function enregistrerFichePour(input: {
         if (refuseParRls(maj)) return refus();
         throw maj;
       }
-      const fiche = await ficheDuProprietaire(supabase, input.userId);
-      if (!fiche) throw error;
-      return { ok: true, fiche };
+      return terminer(supabase, input.userId, lot.valeur);
     }
     if (!conflitSlug(error) || essai === 4) throw error;
   }

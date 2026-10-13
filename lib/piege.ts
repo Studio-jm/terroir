@@ -11,6 +11,18 @@ const CHAMPS_REELS = new Set([
   "contact",
   "description",
   "q",
+  "presentation",
+  "labels",
+  "telephone",
+  "email-pro",
+  "afficher-contact",
+  "sur-rendezvous",
+  "mode",
+  "paiement",
+  "lien-site",
+  "lien-instagram",
+  "lien-facebook",
+  "lien-autre",
 ]);
 
 export function nomPiegeInterdit(nom: string): boolean {
