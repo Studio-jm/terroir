@@ -140,7 +140,7 @@ test("la révélation est limitée en débit", () => {
 
 test("la suppression de compte retire photos, actualités et fermetures", () => {
   const sql = readFileSync(
-    new URL("../supabase/migrations/20261013223000_fiche_lot2.sql", import.meta.url),
+    new URL("../supabase/migrations/20261013214257_fiche_lot2.sql", import.meta.url),
     "utf8",
   );
   assert.match(sql, /photos-exploitations/);
