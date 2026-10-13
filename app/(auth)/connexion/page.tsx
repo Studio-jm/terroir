@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { FormulaireCompte } from "@/app/(auth)/formulaire-compte";
+import { CoquePage } from "@/app/coque-page";
 import { MESSAGES_CONNEXION } from "@/lib/etat-compte";
 import {
   identifiantsSupabase,
@@ -20,12 +21,14 @@ export default async function ConnexionPage({
 }) {
   if (!identifiantsSupabase()) {
     return (
-      <main>
-        <h1>Connexion</h1>
-        <p className="erreur" role="alert">
-          {MESSAGE_SUPABASE_MANQUANT}
-        </p>
-      </main>
+      <CoquePage>
+        <h1 className="text-3xl leading-tight md:text-5xl">Connexion</h1>
+        <div className="panneau">
+          <p className="erreur" role="alert">
+            {MESSAGE_SUPABASE_MANQUANT}
+          </p>
+        </div>
+      </CoquePage>
     );
   }
 
@@ -37,18 +40,22 @@ export default async function ConnexionPage({
     : null;
 
   return (
-    <main>
-      <h1>Connexion</h1>
-      <p>Indiquez l&apos;adresse e-mail et le mot de passe du compte producteur.</p>
+    <CoquePage>
+      <h1 className="text-3xl leading-tight md:text-5xl">Connexion</h1>
+      <p className="text-base leading-relaxed text-encre-douce">
+        Indiquez l&apos;adresse e-mail et le mot de passe du compte producteur.
+      </p>
       {message ? (
         <p className="erreur" role="alert">
           {message}
         </p>
       ) : null}
-      <FormulaireCompte mode="connexion" />
+      <div className="panneau">
+        <FormulaireCompte mode="connexion" />
+      </div>
       <p>
         <Link href="/inscription">Pas encore de compte ? Inscription</Link>
       </p>
-    </main>
+    </CoquePage>
   );
 }

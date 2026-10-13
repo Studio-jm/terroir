@@ -41,45 +41,45 @@ input[type="search"]::-webkit-search-cancel-button {
   appearance: none;
 }
 
-main:not(.accueil) {
+main:not(.accueil):not(.page) {
   max-width: 40rem;
   margin: 1.5rem auto;
   padding: 0 1.25rem;
 }
 
-main:not(.accueil) h1,
-main:not(.accueil) h2 {
+main:not(.accueil):not(.page) h1,
+main:not(.accueil):not(.page) h2 {
   font-family: var(--font-fraunces), "Iowan Old Style", Palatino, serif;
 }
 
-main:not(.accueil) h1 {
+main:not(.accueil):not(.page) h1 {
   font-size: 1.85rem;
   font-weight: 650;
   line-height: 1.2;
   margin: 0 0 0.4rem;
 }
 
-main:not(.accueil) h2 {
+main:not(.accueil):not(.page) h2 {
   font-size: 1.3rem;
   font-weight: 650;
   line-height: 1.3;
   margin: 0 0 0.55rem;
 }
 
-main:not(.accueil) p {
+main:not(.accueil):not(.page) p {
   margin: 0.75rem 0;
 }
 
-main:not(.accueil) a {
+main:not(.accueil):not(.page) a {
   color: var(--color-terre);
   text-decoration: underline;
 }
 
-main:not(.accueil) li + li {
+main:not(.accueil):not(.page) li + li {
   margin-top: 0.35rem;
 }
 
-main:not(.accueil) section {
+main:not(.accueil):not(.page) section {
   margin-top: 1.75rem;
 }
 
@@ -111,11 +111,13 @@ main:not(.accueil) section {
 }
 
 .formulaire {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.85rem;
   margin-top: 1rem;
+  max-width: 100%;
 }
 
 .champ {
@@ -123,7 +125,9 @@ main:not(.accueil) section {
   flex-direction: column;
   align-items: flex-start;
   gap: 0.35rem;
-  width: min(100%, 24rem);
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .champ input,
@@ -135,7 +139,7 @@ main:not(.accueil) section {
   box-sizing: border-box;
   background: var(--color-papier);
   border: 2px solid var(--color-encre);
-  border-radius: 0.25rem;
+  border-radius: 0.5rem;
   color: var(--color-encre);
 }
 
@@ -150,9 +154,24 @@ main:not(.accueil) section {
   color: var(--color-encre);
 }
 
+.formulaire button {
+  font-weight: 600;
+  padding: 0.55rem 1rem;
+  border-color: var(--color-sauge);
+  border-radius: 0.5rem;
+  background: var(--color-sauge);
+  color: var(--color-creme);
+}
+
+.formulaire button:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
 .erreur {
   color: #8f1d1f;
   margin: 0;
+  overflow-wrap: anywhere;
 }
 
 .aide {
@@ -162,17 +181,87 @@ main:not(.accueil) section {
 
 .succes {
   margin: 0;
+  color: var(--color-sauge);
+  font-weight: 600;
 }
 
 .piege {
   position: absolute;
-  left: -10000px;
   width: 1px;
   height: 1px;
-  margin: 0;
+  margin: -1px;
   padding: 0;
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
   border: 0;
+}
+
+.page {
+  margin: 0;
+  max-width: none;
+  padding: 0;
+  overflow-wrap: break-word;
+}
+
+.page h1,
+.page h2 {
+  font-family: var(--font-fraunces), "Iowan Old Style", Palatino, serif;
+  font-weight: 650;
+  line-height: 1.2;
+  margin: 0;
+  color: var(--color-encre);
+}
+
+.page h2 {
+  margin-bottom: 0.55rem;
+}
+
+.page p {
+  margin: 0.75rem 0;
+}
+
+.page a {
+  color: var(--color-terre);
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.page .pied,
+.page .pied h2,
+.page .pied a {
+  color: var(--color-creme);
+}
+
+.panneau {
+  min-width: 0;
+  max-width: 100%;
+  background: var(--color-papier);
+  border-radius: 0.5rem;
+  padding: 1rem 1.1rem;
+}
+
+.page .liste {
+  margin: 0.35rem 0 0;
+  padding-left: 1.15rem;
+}
+
+.page .liste li + li {
+  margin-top: 0.35rem;
+}
+
+.pastilles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0.35rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pastilles li {
+  background: var(--color-sauge-claire);
+  border-radius: 999px;
+  padding: 0.15rem 0.7rem;
 }
