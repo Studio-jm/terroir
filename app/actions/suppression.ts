@@ -2,10 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import {
-  etatSuppressionInitial,
-  type EtatSuppression,
-} from "@/lib/etat-suppression";
+import { type EtatSuppression } from "@/lib/etat-suppression";
 import { clientFiches, ficheDuProprietaire } from "@/lib/fiches";
 import { piegeRempli } from "@/lib/piege";
 import { creerClientServeur } from "@/lib/supabase/server";
@@ -37,7 +34,9 @@ export async function supprimerFiche(
   }
 
   const supabase = await clientFiches();
-  if (!supabase) return { ...etatSuppressionInitial, erreur: "La suppression n'a pas abouti. Réessayez." };
+  if (!supabase) {
+    return { erreur: "La suppression n'a pas abouti. Réessayez.", message: "" };
+  }
 
   const fiche = await ficheDuProprietaire(supabase, utilisateur.id);
   if (!fiche) {

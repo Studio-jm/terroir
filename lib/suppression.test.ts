@@ -4,7 +4,7 @@ import test from "node:test";
 
 const sql = readFileSync(
   new URL(
-    "../supabase/migrations/20261013161500_supprimer_mon_compte.sql",
+    "../supabase/migrations/20261013145957_supprimer_mon_compte.sql",
     import.meta.url,
   ),
   "utf8",
