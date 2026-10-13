@@ -16,11 +16,17 @@ test("refuse une fiche vide et un contact invalide", () => {
   });
   assert.equal(vide.ok, false);
   if (!vide.ok) {
-    assert.equal(vide.erreurs.nom, "Indiquez le nom de l'exploitation.");
-    assert.equal(vide.erreurs.commune, "Indiquez la commune.");
-    assert.equal(vide.erreurs.produits, "Indiquez au moins un produit.");
-    assert.equal(vide.erreurs.contact, "Indiquez un moyen de contact.");
-    assert.equal(vide.erreurs.description, "Décrivez l'exploitation.");
+    assert.equal(vide.erreurs.nom, "Nom : indiquez le nom de l'exploitation.");
+    assert.equal(vide.erreurs.commune, "Commune : indiquez la commune.");
+    assert.equal(
+      vide.erreurs.produits,
+      "Produits : indiquez au moins un produit.",
+    );
+    assert.equal(vide.erreurs.contact, "Contact : indiquez un moyen de contact.");
+    assert.equal(
+      vide.erreurs.description,
+      "Description : décrivez l'exploitation.",
+    );
   }
 
   const contact = validerFiche({
@@ -32,8 +38,27 @@ test("refuse une fiche vide et un contact invalide", () => {
   });
   assert.equal(contact.ok, false);
   if (!contact.ok) {
-    assert.match(contact.erreurs.contact ?? "", /e-mail/);
+    assert.match(contact.erreurs.contact ?? "", /^Contact :/);
     assert.equal(contact.erreurs.nom, undefined);
+  }
+});
+
+test("normalise une adresse web sans schéma", () => {
+  const attendus = [
+    ["https://exemple.org", "https://exemple.org"],
+    ["www.exemple.org", "https://www.exemple.org"],
+    ["exemple.org", "https://exemple.org"],
+  ] as const;
+  for (const [saisi, attendu] of attendus) {
+    const resultat = validerFiche({
+      nom: "Ferme du Test",
+      commune: "Nyons",
+      produits: "miel",
+      contact: saisi,
+      description,
+    });
+    assert.equal(resultat.ok, true, saisi);
+    if (resultat.ok) assert.equal(resultat.valeur.contact, attendu);
   }
 });
 
@@ -51,6 +76,9 @@ test("accepte un e-mail, un téléphone ou une adresse web", () => {
       description,
     });
     assert.equal(resultat.ok, true, valeur);
+    if (resultat.ok && valeur.includes("@")) {
+      assert.equal(resultat.valeur.contact, valeur);
+    }
   }
 
   const script = validerFiche({
@@ -80,6 +108,25 @@ test("le slug reste unique et la commune saisie est cherchable", () => {
     commune: "Nyons",
   } satisfies Exploitation;
   assert.equal(communeDe(exploitation), "Nyons");
+});
+
+test("un compte B est refusé sur la fiche d'un compte A", () => {
+  assert.equal(
+    deciderEnregistrement({
+      slugDemande: "fiche-du-compte-a",
+      slugPropre: null,
+      cibleEstSienne: false,
+    }),
+    "refus",
+  );
+  assert.equal(
+    deciderEnregistrement({
+      slugDemande: "fiche-du-compte-a",
+      slugPropre: "fiche-du-compte-b",
+      cibleEstSienne: false,
+    }),
+    "refus",
+  );
 });
 
 test("seul le propriétaire peut modifier sa fiche", () => {

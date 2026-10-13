@@ -44,10 +44,31 @@ export function urlContactValide(valeur: string): boolean {
     const url = new URL(valeur);
     if (url.protocol !== "http:" && url.protocol !== "https:") return false;
     if (url.username || url.password) return false;
+    if (url.port) return false;
     return url.hostname.includes(".");
   } catch {
     return false;
   }
+}
+
+function urlSansSchema(valeur: string): string | null {
+  if (/^[a-z][a-z0-9+.-]*:/i.test(valeur)) return null;
+  let url: URL;
+  try {
+    url = new URL(`https://${valeur}`);
+  } catch {
+    return null;
+  }
+  if (url.username || url.password || url.port) return null;
+  if (url.protocol !== "https:" || !url.hostname.includes(".")) return null;
+  const chemin = `${url.pathname}${url.search}${url.hash}`;
+  return `https://${url.hostname}${chemin === "/" ? "" : chemin}`;
+}
+
+export function normaliserContact(valeur: string): string {
+  if (emailContactValide(valeur) || telephoneContactValide(valeur)) return valeur;
+  if (urlContactValide(valeur)) return valeur;
+  return urlSansSchema(valeur) ?? valeur;
 }
 
 export function contactValide(valeur: string): boolean {
@@ -108,37 +129,35 @@ export function validerFiche(
   const erreurs: ErreursFiche = {};
   const nom = nettoyer(champs.nom).replace(/\s+/g, " ");
   const commune = nettoyer(champs.commune).replace(/\s+/g, " ");
-  const contact = nettoyer(champs.contact).replace(/\s+/g, " ");
+  const contact = normaliserContact(
+    nettoyer(champs.contact).replace(/\s+/g, " "),
+  );
   const description = nettoyer(champs.description);
 
-  if (!nom) erreurs.nom = "Indiquez le nom de l'exploitation.";
-  else if (nom.length < 2)
-    erreurs.nom = "Le nom doit contenir au moins 2 caractères.";
-  else if (nom.length > 80)
-    erreurs.nom = "Le nom ne peut pas dépasser 80 caractères.";
+  if (!nom) erreurs.nom = "Nom : indiquez le nom de l'exploitation.";
+  else if (nom.length < 2) erreurs.nom = "Nom : 2 caractères minimum.";
+  else if (nom.length > 80) erreurs.nom = "Nom : 80 caractères maximum.";
 
-  if (!commune) erreurs.commune = "Indiquez la commune.";
-  else if (commune.length < 2)
-    erreurs.commune = "La commune doit contenir au moins 2 caractères.";
+  if (!commune) erreurs.commune = "Commune : indiquez la commune.";
+  else if (commune.length < 2) erreurs.commune = "Commune : 2 caractères minimum.";
   else if (commune.length > 80)
-    erreurs.commune = "La commune ne peut pas dépasser 80 caractères.";
+    erreurs.commune = "Commune : 80 caractères maximum.";
 
   const produits = lireProduits(champs.produits, erreurs);
 
-  if (!contact) erreurs.contact = "Indiquez un moyen de contact.";
+  if (!contact) erreurs.contact = "Contact : indiquez un moyen de contact.";
   else if (contact.length > 200)
-    erreurs.contact = "Le contact ne peut pas dépasser 200 caractères.";
+    erreurs.contact = "Contact : 200 caractères maximum.";
   else if (!contactValide(contact)) {
     erreurs.contact =
-      "Le contact doit être un e-mail, un numéro de téléphone français ou une adresse web (http ou https).";
+      "Contact : indiquez un e-mail, un téléphone français ou une adresse web (https://exemple.org, www.exemple.org ou exemple.org).";
   }
 
-  if (!description) erreurs.description = "Décrivez l'exploitation.";
+  if (!description) erreurs.description = "Description : décrivez l'exploitation.";
   else if (description.length < 20) {
-    erreurs.description =
-      "La description doit contenir au moins 20 caractères.";
+    erreurs.description = "Description : 20 caractères minimum.";
   } else if (description.length > 2000) {
-    erreurs.description = "La description ne peut pas dépasser 2000 caractères.";
+    erreurs.description = "Description : 2000 caractères maximum.";
   }
 
   if (Object.keys(erreurs).length > 0) return { ok: false, erreurs };
@@ -150,7 +169,7 @@ export function validerFiche(
 
 function lireProduits(brut: string, erreurs: ErreursFiche): string[] {
   if (brut.length > 500) {
-    erreurs.produits = "La liste des produits est trop longue.";
+    erreurs.produits = "Produits : la liste est trop longue.";
     return [];
   }
   const vus = new Set<string>();
@@ -159,7 +178,7 @@ function lireProduits(brut: string, erreurs: ErreursFiche): string[] {
     const produit = nettoyer(morceau).replace(/\s+/g, " ");
     if (!produit) continue;
     if (produit.length > 40) {
-      erreurs.produits = "Chaque produit doit tenir en 40 caractères.";
+      erreurs.produits = "Produits : chaque produit tient en 40 caractères.";
       return [];
     }
     const cle = plier(produit);
@@ -168,9 +187,9 @@ function lireProduits(brut: string, erreurs: ErreursFiche): string[] {
     produits.push(produit);
   }
   if (!erreurs.produits && produits.length === 0) {
-    erreurs.produits = "Indiquez au moins un produit.";
+    erreurs.produits = "Produits : indiquez au moins un produit.";
   } else if (produits.length > 12) {
-    erreurs.produits = "Indiquez 12 produits au maximum.";
+    erreurs.produits = "Produits : 12 produits maximum.";
   }
   return produits;
 }

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { enregistrerFichePour } from "@/lib/enregistrer-fiche";
 import type { EtatFiche, ValeursFiche } from "@/lib/etat-fiche";
+import { piegeRempli } from "@/lib/piege";
 import { utilisateurCourant } from "@/lib/supabase/session";
 
 function texte(formData: FormData, nom: string, max: number): string {
@@ -43,7 +44,7 @@ export async function enregistrerFiche(
     const resultat = await enregistrerFichePour({
       userId: utilisateur.id,
       slugDemande: valeurs.slug,
-      piege: texte(formData, "site_web", 200),
+      piege: piegeRempli(formData) ? "rempli" : "",
       champs: {
         nom: valeurs.nom,
         commune: valeurs.commune,

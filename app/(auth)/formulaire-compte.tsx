@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { ChampPiege } from "@/app/champ-piege";
 import { connecter, inscrire } from "@/app/actions/auth";
 import { etatCompteInitial, type EtatCompte } from "@/lib/etat-compte";
 
@@ -14,6 +15,8 @@ export function FormulaireCompte({
     action,
     etatCompteInitial,
   );
+  const erreurs = pending ? {} : state.erreurs;
+  const message = pending ? "" : state.message;
 
   return (
     <form action={formAction} className="formulaire" noValidate>
@@ -22,7 +25,7 @@ export function FormulaireCompte({
         label="Adresse e-mail"
         type="email"
         autoComplete="email"
-        erreur={state.erreurs.email}
+        erreur={erreurs.email}
         defaultValue={state.valeurs.email}
       />
       <Champ
@@ -32,7 +35,7 @@ export function FormulaireCompte({
         autoComplete={
           mode === "inscription" ? "new-password" : "current-password"
         }
-        erreur={state.erreurs.motDePasse}
+        erreur={erreurs.motDePasse}
       />
       {mode === "inscription" ? (
         <Champ
@@ -40,28 +43,18 @@ export function FormulaireCompte({
           label="Confirmation du mot de passe"
           type="password"
           autoComplete="new-password"
-          erreur={state.erreurs.confirmation}
+          erreur={erreurs.confirmation}
         />
       ) : null}
-      <div className="piege">
-        <label htmlFor="site_web">Site web</label>
-        <input
-          id="site_web"
-          name="site_web"
-          type="text"
-          tabIndex={-1}
-          autoComplete="off"
-          defaultValue=""
-        />
-      </div>
-      {state.erreurs.formulaire ? (
+      <ChampPiege />
+      {erreurs.formulaire ? (
         <p className="erreur" role="alert">
-          {state.erreurs.formulaire}
+          {erreurs.formulaire}
         </p>
       ) : null}
-      {state.message ? (
+      {message ? (
         <p className="succes" role="status">
-          {state.message}
+          {message}
         </p>
       ) : null}
       <button type="submit" disabled={pending}>
