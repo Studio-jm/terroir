@@ -11,9 +11,11 @@ Modèle de données Exploitation partagé (types TypeScript et données de démo
 
 Faite par la pull request qui introduit cette feuille de route.
 
-## Étape 2
+## Étape 2 — faite
 
-Recherche et filtre (nom, commune, produits) sur l'accueil.
+Recherche et filtre (nom, commune, produits) sur l'accueil, sans tenir compte des accents ni de la casse.
+
+Faite par la pull request de recherche et filtre sur l'accueil.
 
 ## Étape 3
 
