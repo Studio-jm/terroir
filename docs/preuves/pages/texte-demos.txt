@@ -1,0 +1,8 @@
+git diff HEAD -- lib/exploitation.ts
+(aucune ligne)
+
+Phrases encore présentes dans lib/exploitation.ts :
+54: nom: "Ferme du Serre (exemple fictif)"
+57: histoire « Exemple fictif. Nous élevons une quarantaine de chèvres... »
+81: nom: "Ferme des Nuages (exemple fictif)"
+102: nom: "Le Rucher de Nulle-Part (exemple fictif)"

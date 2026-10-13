@@ -1,0 +1,59 @@
+{
+  "requestedUrl": "http://127.0.0.1:3456/e/ferme-du-serre",
+  "finalUrl": "http://127.0.0.1:3456/e/ferme-du-serre",
+  "fetchTime": "2026-10-13T19:13:47.814Z",
+  "formFactor": "mobile",
+  "screenEmulation": {
+    "mobile": true,
+    "width": 412,
+    "height": 823,
+    "deviceScaleFactor": 1.75,
+    "disabled": false
+  },
+  "throttling": {
+    "rttMs": 150,
+    "throughputKbps": 1638.4,
+    "requestLatencyMs": 562.5,
+    "downloadThroughputKbps": 1474.5600000000002,
+    "uploadThroughputKbps": 675,
+    "cpuSlowdownMultiplier": 4
+  },
+  "runtimeError": null,
+  "scores": {
+    "accessibility": 1,
+    "performance": 0.95
+  },
+  "metrics": {
+    "lcp": "2.9 s",
+    "fcp": "0.8 s",
+    "cls": "0",
+    "tbt": "30 ms"
+  },
+  "note": "Un passage mobile sur next start. Charge 0,26 sur 4 cœurs. runtimeError null. Le LCP (2,9 s) limite le score sous le Slow 4G simulé et CPU x4 de Lighthouse. L'image 750 px a été demandée une fois avant la mesure.",
+  "lowAudits": [
+    {
+      "id": "largest-contentful-paint",
+      "score": 0.81,
+      "title": "Largest Contentful Paint",
+      "display": "2.9 s"
+    },
+    {
+      "id": "bf-cache",
+      "score": 0,
+      "title": "Page prevented back/forward cache restoration",
+      "display": "2 failure reasons"
+    },
+    {
+      "id": "lcp-discovery-insight",
+      "score": 0,
+      "title": "LCP request discovery",
+      "display": ""
+    },
+    {
+      "id": "network-dependency-tree-insight",
+      "score": 0,
+      "title": "Network dependency tree",
+      "display": ""
+    }
+  ]
+}

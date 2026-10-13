@@ -1,0 +1,102 @@
+[
+  {
+    "id": "fiche",
+    "path": "/e/ferme-du-serre",
+    "width": 375,
+    "file": "docs/preuves/pages/avant/fiche-375.png",
+    "scrollWidth": 375,
+    "clientWidth": 375,
+    "count": 0,
+    "offenders": []
+  },
+  {
+    "id": "fiche",
+    "path": "/e/ferme-du-serre",
+    "width": 1280,
+    "file": "docs/preuves/pages/avant/fiche-1280.png",
+    "scrollWidth": 1280,
+    "clientWidth": 1280,
+    "count": 0,
+    "offenders": []
+  },
+  {
+    "id": "inscription",
+    "path": "/inscription",
+    "width": 375,
+    "file": "docs/preuves/pages/avant/inscription-375.png",
+    "scrollWidth": 375,
+    "clientWidth": 375,
+    "count": 0,
+    "offenders": []
+  },
+  {
+    "id": "inscription",
+    "path": "/inscription",
+    "width": 1280,
+    "file": "docs/preuves/pages/avant/inscription-1280.png",
+    "scrollWidth": 1280,
+    "clientWidth": 1280,
+    "count": 0,
+    "offenders": []
+  },
+  {
+    "id": "connexion",
+    "path": "/connexion",
+    "width": 375,
+    "file": "docs/preuves/pages/avant/connexion-375.png",
+    "scrollWidth": 375,
+    "clientWidth": 375,
+    "count": 0,
+    "offenders": []
+  },
+  {
+    "id": "connexion",
+    "path": "/connexion",
+    "width": 1280,
+    "file": "docs/preuves/pages/avant/connexion-1280.png",
+    "scrollWidth": 1280,
+    "clientWidth": 1280,
+    "count": 0,
+    "offenders": []
+  },
+  {
+    "id": "espace",
+    "path": "/espace",
+    "width": 375,
+    "file": "docs/preuves/pages/avant/espace-375.png",
+    "scrollWidth": 375,
+    "clientWidth": 375,
+    "count": 0,
+    "offenders": []
+  },
+  {
+    "id": "espace",
+    "path": "/espace",
+    "width": 1280,
+    "file": "docs/preuves/pages/avant/espace-1280.png",
+    "scrollWidth": 1280,
+    "clientWidth": 1280,
+    "count": 0,
+    "offenders": []
+  },
+  {
+    "id": "introuvable",
+    "path": "/fiche-introuvable",
+    "width": 375,
+    "file": "docs/preuves/pages/avant/introuvable-375.png",
+    "scrollWidth": 375,
+    "clientWidth": 375,
+    "count": 0,
+    "offenders": []
+  },
+  {
+    "id": "introuvable",
+    "path": "/fiche-introuvable",
+    "width": 1280,
+    "file": "docs/preuves/pages/avant/introuvable-1280.png",
+    "scrollWidth": 1280,
+    "clientWidth": 1280,
+    "count": 0,
+    "offenders": []
+  }
+]
