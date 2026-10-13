@@ -61,7 +61,7 @@ say() {
   printf '%s\n' "$1" | tee -a "$EVID/summary.txt"
 }
 
-PORT=$(node -e 'const net = require("net"); const s = net.createServer(); s.listen(0, "127.0.0.1", () => { console.log(s.address().port); s.close(); });')
+PORT=$(node -e 'const net = require("net"); const s = net.createServer(); s.listen(0, "0.0.0.0", () => { console.log(s.address().port); s.close(); });')
 
 cleanup() {
   if [ -f "$EVID/server.pgid" ]; then
@@ -126,7 +126,7 @@ if [ "$build_code" -ne 0 ]; then
 fi
 
 set -m
-npm run start -- -H 127.0.0.1 -p "$PORT" >"$EVID/start.log" 2>&1 &
+npm run start -- -p "$PORT" >"$EVID/start.log" 2>&1 &
 server_pid=$!
 pgid=$(ps -o pgid= -p "$server_pid" | tr -d '[:space:]')
 printf '%s\n' "$server_pid" > "$EVID/server.pid"
@@ -180,11 +180,13 @@ fi
 
 ## Launch
 
-The acceptance script is the launch. It installs with `npm ci`, lints with `npm run lint`, builds with `npm run build`, then starts the production server with `npm run start -- -H 127.0.0.1 -p "$PORT"`.
+The acceptance script is the launch. It installs with `npm ci`, lints with `npm run lint`, builds with `npm run build`, then starts the production server with `npm run start -- -p "$PORT"`.
 
-`$PORT` is a free TCP port on `127.0.0.1`. The script chooses it before start.
+`$PORT` is a free TCP port. The script chooses it before start. Next.js listens on `0.0.0.0`. The checks call `http://127.0.0.1:$PORT`.
 
-Ready means `GET /` returns 200. The server log also prints a line containing `Ready` and `Local: http://127.0.0.1:<port>`. Wait for HTTP 200 before the other requests. A process that has only opened the port is not enough.
+Do not pass `-H 127.0.0.1`. An unknown slug is rewritten through `localhost`. On this machine `localhost` is `::1`. A server bound only to `127.0.0.1` then returns 500 for `/e/inconnu`. The default listen address accepts that rewrite, and the status is 404.
+
+Ready means `GET /` returns 200. The server log also prints a line containing `Ready` and `Local: http://localhost:<port>`. Wait for HTTP 200 before the other requests. A process that has only opened the port is not enough.
 
 There is no database and no seed step. The three public exploitation pages are compiled into the build.
 
@@ -198,7 +200,7 @@ Run the acceptance script. If it fails, read these files under the evidence dire
 - `start.log` if the server never returned 200.
 - `server.pid` and `listener.pid` for the processes this run started.
 
-Confirm `node -v` is 20.9.0 or newer and that `curl` and `npm` are on `PATH`. Confirm the listener address is `127.0.0.1` and the port in `summary.txt`. Drive only a server this run started.
+Confirm `node -v` is 20.9.0 or newer and that `curl` and `npm` are on `PATH`. Confirm the listener port matches `summary.txt` and that `GET /` on `127.0.0.1` returns 200. Drive only a server this run started.
 
 ## Drive
 
@@ -316,7 +318,7 @@ Open `/e/inconnu`.
 
 Preconditions. The acceptance server is up.
 
-- Action. Request the unknown slug. Command. `curl -sS -o /dev/null -w "%{http_code}" "http://127.0.0.1:$PORT/e/inconnu"`. Result. `404`. The HTML heading is `Page introuvable`.
+- Action. Request the unknown slug. Command. `curl -sS -o /dev/null -w "%{http_code}" "http://127.0.0.1:$PORT/e/inconnu"`. Result. `404`. The HTML heading is `Fiche introuvable`.
 
 ## Gotchas
 
