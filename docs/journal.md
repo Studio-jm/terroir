@@ -23,3 +23,5 @@
 2026-10-13 — Thème de l'accueil sur les fiches, l'inscription, la connexion, l'espace et la page fiche introuvable. Texte des démos inchangé. Test de fin : points 1 à 4 passent (débordement 0, Lighthouse mobile fiche 100/95, inscription 100/97, verify-terroir passe). Point 5, CI lint-and-build, pas encore connu.
 
 2026-10-13 — Merge de main `947297f` (PR #14), qui inclut `5512da1` (PR #15). `git merge-tree --write-tree origin/main HEAD` sort 0. La suppression de fiche et de compte reste celle de main. Test de fin : pas de conflit. CI lint-and-build à relire sur ce commit.
+
+2026-10-13 — CI lint-and-build vert sur fd54d2a, run 38454206057. Test de fin : passe.
