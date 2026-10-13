@@ -35,6 +35,12 @@ function messageSupabase(message: string): string {
   if (texteNormalise.includes("rate limit") || texteNormalise.includes("too many")) {
     return "Trop de tentatives. Réessayez dans un instant.";
   }
+  if (
+    texteNormalise.includes("email address") &&
+    texteNormalise.includes("invalid")
+  ) {
+    return "Cette adresse e-mail n'est pas acceptée. Utilisez une adresse réelle, pas example.com.";
+  }
   return "La demande n'a pas abouti. Réessayez.";
 }
 
