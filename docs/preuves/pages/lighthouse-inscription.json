@@ -1,0 +1,47 @@
+{
+  "requestedUrl": "http://127.0.0.1:3456/inscription",
+  "finalUrl": "http://127.0.0.1:3456/inscription",
+  "fetchTime": "2026-10-13T19:13:58.492Z",
+  "formFactor": "mobile",
+  "screenEmulation": {
+    "mobile": true,
+    "width": 412,
+    "height": 823,
+    "deviceScaleFactor": 1.75,
+    "disabled": false
+  },
+  "throttling": {
+    "rttMs": 150,
+    "throughputKbps": 1638.4,
+    "requestLatencyMs": 562.5,
+    "downloadThroughputKbps": 1474.5600000000002,
+    "uploadThroughputKbps": 675,
+    "cpuSlowdownMultiplier": 4
+  },
+  "runtimeError": null,
+  "scores": {
+    "accessibility": 1,
+    "performance": 0.97
+  },
+  "metrics": {
+    "lcp": "2.7 s",
+    "fcp": "0.8 s",
+    "cls": "0",
+    "tbt": "20 ms"
+  },
+  "note": "Un passage mobile sur next start. Charge 0,26 sur 4 cœurs. runtimeError null. Le LCP (2,7 s) limite le score sous le Slow 4G simulé et CPU x4 de Lighthouse. La page ne charge pas de photo.",
+  "lowAudits": [
+    {
+      "id": "largest-contentful-paint",
+      "score": 0.86,
+      "title": "Largest Contentful Paint",
+      "display": "2.7 s"
+    },
+    {
+      "id": "network-dependency-tree-insight",
+      "score": 0,
+      "title": "Network dependency tree",
+      "display": ""
+    }
+  ]
+}
