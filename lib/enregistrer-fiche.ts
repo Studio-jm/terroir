@@ -41,7 +41,7 @@ function conflitProprietaire(error: { code?: string; message?: string }): boolea
 
 function refuseParRls(error: { code?: string; message?: string }): boolean {
   const texte = codeErreur(error).toLowerCase();
-  return texte.includes("42501") || texte.includes("row-level security");
+  return texte.includes("row-level security");
 }
 
 export async function enregistrerFichePour(input: {
