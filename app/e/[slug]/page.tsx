@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import {
@@ -50,7 +51,7 @@ function ExploitationView({ exploitation }: { exploitation: Exploitation }) {
   return (
     <main>
       <p>
-        <a href="/">Terroir</a>
+        <Link href="/">Terroir</Link>
       </p>
       <h1>{nom}</h1>
 
